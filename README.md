@@ -1,6 +1,6 @@
 # Patricio Montes Güemez Portfolio
 
-Static multilingual portfolio built with Next.js App Router, TypeScript, and Tailwind CSS v4.
+Static bilingual portfolio built with Next.js App Router, TypeScript, and Tailwind CSS v4.
 It is designed for GitHub Pages-style static hosting and exports to `out/`.
 
 ## Quick path
@@ -25,8 +25,8 @@ It is designed for GitHub Pages-style static hosting and exports to `out/`.
 | Runtime | Node.js 22.13+ for local verification and GitHub Actions. |
 | Rendering | Next.js App Router with `output: "export"` in `next.config.ts`. |
 | Styling | Tailwind CSS v4 through `@tailwindcss/postcss` and `@import "tailwindcss"`. |
-| Languages | Client-side ES/EN/PT selector; no server-only locale routing. |
-| Themes | Client-side visual theme selector with accessible button controls. |
+| Languages | Client-side ES/EN selector; no server-only locale routing. |
+| Themes | Client-side two-theme toggle with an accessible button control. |
 | Content source | Verified CV facts are curated in `src/content/portfolio.ts`. |
 | Privacy | DNI, CUIL, birth date, home address, and phone numbers are intentionally omitted. |
 | Output | `next build` emits static files into `out/`. |

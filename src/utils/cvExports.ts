@@ -1,7 +1,7 @@
 import type { LanguageCode } from "@/content/portfolio";
 
 export const cvPdfVariants = ["modern", "ats"] as const;
-export const cvPdfExportLanguages = ["en", "es", "pt"] as const;
+export const cvPdfExportLanguages = ["en", "es"] as const;
 
 export type CvPdfVariant = (typeof cvPdfVariants)[number];
 export type CvPdfExportLanguage = (typeof cvPdfExportLanguages)[number];
@@ -30,10 +30,6 @@ export const cvPdfExports: Record<CvPdfExportLanguage, Record<CvPdfVariant, CvPd
   es: {
     modern: buildExport("patricio-montes-cv-modern-es.pdf", "Download Modern PDF CV"),
     ats: buildExport("patricio-montes-cv-ats-es.pdf", "Download ATS PDF CV")
-  },
-  pt: {
-    modern: buildExport("patricio-montes-cv-modern-pt.pdf", "Download Modern PDF CV"),
-    ats: buildExport("patricio-montes-cv-ats-pt.pdf", "Download ATS PDF CV")
   }
 };
 

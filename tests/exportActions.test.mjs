@@ -6,6 +6,8 @@ test("export UI downloads generated PDF assets directly", async () => {
   const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
 
   assert.match(shell, /getCvPdfExports\(language\)/);
+  assert.match(shell, /<details\b/);
+  assert.match(shell, /<summary\b/);
   assert.match(shell, /cvExports\.modern\.href/);
   assert.match(shell, /cvExports\.modern\.fileName/);
   assert.match(shell, /cvExports\.ats\.href/);
@@ -16,6 +18,29 @@ test("export UI downloads generated PDF assets directly", async () => {
   assert.doesNotMatch(shell, /downloadCvSpreadsheet/);
   assert.doesNotMatch(shell, /buildCvSpreadsheetXml/);
   assert.doesNotMatch(shell, /\.xls\b/i);
+});
+
+test("theme selection is a single toggle control instead of mapped theme buttons", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+
+  assert.doesNotMatch(shell, /content\.themes\.map/);
+  assert.match(shell, /setTheme\(/);
+  assert.match(shell, /theme === "midnight" \? "graphite" : "midnight"|theme === 'midnight' \? 'graphite' : 'midnight'/);
+});
+
+test("download UI is one details-summary control with Modern and ATS subitems", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+  const exportActionsMatch = shell.match(/function ExportActions[\s\S]*?\n}\n\nfunction About/);
+
+  assert.ok(exportActionsMatch, "ExportActions component should be present");
+  const exportActionsSource = exportActionsMatch[0];
+
+  assert.match(exportActionsSource, /<details\b/);
+  assert.match(exportActionsSource, /<summary\b/);
+  assert.equal((exportActionsSource.match(/<summary\b/g) ?? []).length, 1);
+  assert.equal((exportActionsSource.match(/<a\b/g) ?? []).length, 2);
+  assert.match(exportActionsSource, /copy\.modernPdfLabel/);
+  assert.match(exportActionsSource, /copy\.atsPdfLabel/);
 });
 
 test("export action helper was removed with browser print behavior", async () => {

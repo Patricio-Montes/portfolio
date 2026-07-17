@@ -2,11 +2,14 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { languageCodes, portfolioContent, themeKeys } from "../src/content/portfolio.ts";
+import { cvPdfExportLanguages } from "../src/utils/cvExports.ts";
 
 test("portfolio exposes the required language and theme options", () => {
-  assert.deepEqual([...languageCodes], ["en", "es", "pt"]);
-  assert.deepEqual([...themeKeys], ["midnight", "graphite", "sunrise"]);
+  assert.deepEqual([...languageCodes], ["en", "es"]);
+  assert.deepEqual([...cvPdfExportLanguages], [...languageCodes]);
+  assert.deepEqual([...themeKeys], ["midnight", "graphite"]);
   assert.equal(themeKeys.includes("forest"), false);
+  assert.equal(themeKeys.includes("sunrise"), false);
 
   for (const code of languageCodes) {
     assert.ok(portfolioContent.locales[code], `missing locale ${code}`);
@@ -17,12 +20,13 @@ test("portfolio exposes the required language and theme options", () => {
   }
 
   const publicText = JSON.stringify(portfolioContent);
-  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i]) {
-    assert.equal(forbidden.test(publicText), false, `legacy forest theme copy found: ${forbidden}`);
+  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i, /\bPortuguese\b/i, /\bPortugués\b/i, /\bPortuguês\b/i, /\bPT\b/, /\bpt\b/, /\bsunrise\b/i, /\bAmanecer\b/i]) {
+    assert.equal(forbidden.test(publicText), false, `forbidden public copy found: ${forbidden}`);
   }
   assert.ok(portfolioContent.themes.some((theme) => theme.key === "graphite"));
   assert.ok(portfolioContent.themes.some((theme) => theme.label.es === "Grafito"));
-  assert.ok(portfolioContent.themes.some((theme) => theme.label.pt === "Grafite"));
+  assert.equal(portfolioContent.themes.length, 2);
+  assert.equal(portfolioContent.languages.length, 2);
 });
 
 test("verified identity and contact facts are present without private CV data", () => {
@@ -71,8 +75,6 @@ test("verified identity and contact facts are present without private CV data", 
 });
 
 test("experience timeline keeps verified roles, dates, and localized copy", () => {
-  assert.equal(portfolioContent.experience.length, 11);
-
   const urbetrack = portfolioContent.experience.find((item) => item.company === "Urbetrack");
   assert.ok(urbetrack);
   assert.equal(urbetrack.role, "Sr .Net Developer");
@@ -94,6 +96,75 @@ test("experience timeline keeps verified roles, dates, and localized copy", () =
   }
 });
 
+test("hero focus chips use the requested professional positioning only", () => {
+  for (const code of languageCodes) {
+    assert.deepEqual(portfolioContent.locales[code].hero.focusAreas, [
+      ".NET",
+      "Angular",
+      "Google Cloud",
+      "Azure",
+      "AI-First",
+      "Clean Architecture"
+    ]);
+    assert.equal(portfolioContent.locales[code].hero.focusAreas.includes("Code review"), false);
+  }
+});
+
+test("page profile summary is concise and covers the required positioning", () => {
+  const expectedSummaries = {
+    en: "Software engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
+    es: "Ingeniero de software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana."
+  };
+
+  for (const code of languageCodes) {
+    const summary = portfolioContent.locales[code].hero.subtitle;
+
+    assert.equal(summary, expectedSummaries[code]);
+    assert.ok(summary.length <= 210, `${code} summary must stay short enough for PDF layout`);
+    assert.match(summary, /10\+/);
+    assert.match(summary, /architecture|arquitectura/i);
+    assert.match(summary, /automation|automatización/i);
+    assert.match(summary, /Clean Code/);
+    assert.match(summary, /Clean Architecture/);
+    assert.match(summary, /DDD/);
+    assert.match(summary, /SDD\/TDD/);
+    assert.match(summary, /AI agents|agentes IA/i);
+    assert.match(summary, /human technical|técnica humana/i);
+    assert.match(summary, /scalable|escalables/i);
+    assert.match(summary, /maintainable|mantenibles/i);
+  }
+});
+
+test("experience ownership and Codeicus ordering match the corrected CV facts", () => {
+  const codeicusItems = portfolioContent.experience.filter((item) => item.company === "Codeicus");
+
+  assert.equal(codeicusItems.length, 2);
+  assert.equal(codeicusItems[0].role, "Ssr .Net Developer");
+  assert.equal(codeicusItems[1].role, "Sr Software Developer");
+  assert.ok(codeicusItems[1].tech.includes("DDD"));
+  assert.equal(codeicusItems[1].tech.includes("Whimsical"), false);
+  assert.equal(codeicusItems[1].tech.includes("JSF"), false);
+  assert.ok(codeicusItems[1].tech.includes("Ionic"));
+
+  const luxsysRoles = portfolioContent.experience
+    .filter((item) => item.company === "Luxsys S.R.L")
+    .map((item) => item.role)
+    .sort();
+  assert.deepEqual(luxsysRoles, ["IT Developer", "Technical Leader"]);
+  assert.equal(
+    portfolioContent.experience.some(
+      (item) => ["IT Developer", "Technical Leader"].includes(item.role) && item.company !== "Luxsys S.R.L"
+    ),
+    false,
+    "Technical Leader and IT Developer must be owned by Luxsys S.R.L exactly"
+  );
+
+  const ecicRoles = portfolioContent.experience
+    .filter((item) => item.company === "ECIC Systems")
+    .map((item) => item.role);
+  assert.deepEqual(ecicRoles, ["Technical Support"]);
+});
+
 test("education avoids unverified graduation or fluency claims", () => {
   const engineering = portfolioContent.education.find((item) =>
     item.institution.includes("Universidad Tecnológica Nacional")
@@ -110,6 +181,16 @@ test("education avoids unverified graduation or fluency claims", () => {
 });
 
 test("added skills and verified public projects are present", () => {
+  const genericMaterialFramework = ["Material", "Design"].join(" ");
+  const frameworks = portfolioContent.skills.find((group) => group.name.en === "Frameworks");
+  assert.ok(frameworks, "missing Frameworks skill group");
+  assert.ok(frameworks.items.includes("Angular Material"), "Frameworks must include Angular Material");
+  assert.equal(frameworks.items.includes(genericMaterialFramework), false, "must not add generic Material framework");
+
+  const sideas = portfolioContent.experience.find((item) => item.company === "Sideas");
+  assert.ok(sideas, "missing Sideas experience");
+  assert.ok(sideas.tech.includes("Angular Material"), "Sideas tech must keep Angular Material");
+
   const databases = portfolioContent.skills.find((group) => group.name.en === "Databases");
   assert.ok(databases, "missing Databases skill group");
   assert.ok(databases.items.includes("Supabase"));

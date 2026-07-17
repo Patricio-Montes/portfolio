@@ -4,12 +4,17 @@ import { dirname, join } from "node:path";
 import { finished } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
-import { languageCodes, portfolioContent } from "../src/content/portfolio.ts";
-import { getCvPdfExports } from "../src/utils/cvExports.ts";
+import { portfolioContent } from "../src/content/portfolio.ts";
+import { cvPdfExportLanguages, getCvPdfExports } from "../src/utils/cvExports.ts";
 
 const rootDirectory = dirname(fileURLToPath(new URL("../package.json", import.meta.url)));
 const outputDirectory = join(rootDirectory, "public", "downloads");
-const obsoletePdfAssets = ["patricio-montes-cv-modern.pdf", "patricio-montes-cv-ats.pdf"];
+const obsoletePdfAssets = [
+  "patricio-montes-cv-modern.pdf",
+  "patricio-montes-cv-ats.pdf",
+  "patricio-montes-cv-modern-pt.pdf",
+  "patricio-montes-cv-ats-pt.pdf"
+];
 
 const sectionLabels = {
   en: {
@@ -35,20 +40,10 @@ const sectionLabels = {
     projects: "Proyectos",
     education: "Educación",
     technologies: "Tecnologías"
-  },
-  pt: {
-    coreSkills: "Competências principais",
-    experience: "Experiência",
-    selectedProjects: "Projetos selecionados",
-    educationTraining: "Educação e formação",
-    professionalSummary: "Resumo profissional",
-    skills: "Competências",
-    professionalExperience: "Experiência profissional",
-    projects: "Projetos",
-    education: "Educação",
-    technologies: "Tecnologias"
   }
 };
+
+const roleChangeCompanies = new Set(["Codeicus", "Luxsys S.R.L", "UNX Digital / Grupo Prominente"]);
 
 function localize(value, language) {
   return value[language];
@@ -83,6 +78,77 @@ function ensureSpace(doc, requiredHeight = 120) {
   if (doc.y + requiredHeight > doc.page.height - doc.page.margins.bottom) {
     doc.addPage();
   }
+}
+
+function groupExperience(items) {
+  const groups = [];
+
+  for (const item of items) {
+    const previous = groups.at(-1);
+
+    if (roleChangeCompanies.has(item.company) && previous?.company === item.company && previous.grouped) {
+      previous.items.push(item);
+      continue;
+    }
+
+    groups.push({
+      company: item.company,
+      grouped: roleChangeCompanies.has(item.company),
+      items: [item]
+    });
+  }
+
+  return groups;
+}
+
+function addModernExperienceItem(doc, item, language, labels, options = {}) {
+  const left = options.indent ? 62 : 48;
+  const titleWidth = options.indent ? 300 : 335;
+  const bulletWidth = options.indent ? 462 : 480;
+  const title = options.grouped ? item.role : `${item.role} · ${item.company}`;
+  const titleY = doc.y;
+
+  doc.font("Helvetica-Bold").fontSize(10.7).fillColor("#111827").text(title, left, titleY, {
+    width: titleWidth,
+    lineGap: 1
+  });
+  doc.font("Helvetica").fontSize(8.3).fillColor("#64748B").text(localize(item.period, language), 392, titleY, {
+    width: 153,
+    align: "right",
+    lineGap: 1
+  });
+  doc.x = left;
+  doc.moveDown(0.25);
+
+  for (const highlight of localize(item.highlights, language).slice(0, 2)) {
+    doc.x = left;
+    addBullet(doc, highlight, { size: 8.8, width: bulletWidth });
+  }
+
+  doc.x = left;
+  doc.font("Helvetica").fontSize(8).fillColor("#475569").text(`${labels.technologies}: ${item.tech.join(" · ")}`, {
+    width: bulletWidth + 20,
+    lineGap: 1
+  });
+  doc.moveDown(0.35);
+  doc.x = 48;
+}
+
+function addAtsExperienceItem(doc, item, language, labels, options = {}) {
+  const left = options.indent ? 58 : 48;
+  const width = options.indent ? 460 : 500;
+  const title = options.grouped ? `${item.role} | ${localize(item.period, language)}` : `${item.role} | ${item.company} | ${localize(item.period, language)}`;
+
+  doc.x = left;
+  doc.font("Helvetica-Bold").fontSize(10).text(title, { width, lineGap: 1 });
+  for (const highlight of localize(item.highlights, language)) {
+    doc.x = left;
+    addBullet(doc, highlight, { color: "#000000", textColor: "#000000", size: 8.7, width: width - 20 });
+  }
+  doc.x = left;
+  doc.font("Helvetica").fontSize(8.5).text(`${labels.technologies}: ${item.tech.join(", ")}`, { width });
+  doc.moveDown(0.35);
+  doc.x = 48;
 }
 
 async function writePdf(fileName, render) {
@@ -135,23 +201,23 @@ function renderModernCv(doc, language) {
   doc.font("Helvetica").fontSize(9.2).fillColor("#334155").text(skills, { width: 500, lineGap: 2 });
 
   addSectionTitle(doc, labels.experience, "#0F172A");
-  for (const item of portfolioContent.experience) {
-    ensureSpace(doc, 92);
-    doc.font("Helvetica-Bold").fontSize(10.7).fillColor("#111827").text(`${item.role} · ${item.company}`, {
-      width: 350,
-      continued: true
-    });
-    doc.font("Helvetica").fontSize(8.5).fillColor("#64748B").text(localize(item.period, language), {
-      align: "right"
-    });
-    doc.moveDown(0.25);
-    for (const highlight of localize(item.highlights, language).slice(0, 2)) {
-      addBullet(doc, highlight, { size: 8.8, width: 480 });
+  for (const group of groupExperience(portfolioContent.experience)) {
+    ensureSpace(doc, group.grouped ? 46 + group.items.length * 76 : 92);
+
+    if (group.grouped && group.items.length > 1) {
+      doc.font("Helvetica-Bold").fontSize(10.7).fillColor("#111827").text(group.company, 48, doc.y, {
+        width: 497,
+        lineGap: 1
+      });
+      doc.moveDown(0.25);
+      for (const item of group.items) {
+        ensureSpace(doc, 76);
+        addModernExperienceItem(doc, item, language, labels, { grouped: true, indent: true });
+      }
+      continue;
     }
-    doc.font("Helvetica").fontSize(8).fillColor("#475569").text(item.tech.join(" · "), {
-      width: 500
-    });
-    doc.moveDown(0.35);
+
+    addModernExperienceItem(doc, group.items[0], language, labels);
   }
 
   addSectionTitle(doc, labels.selectedProjects, "#0F172A");
@@ -189,14 +255,23 @@ function renderAtsCv(doc, language) {
   }
 
   addSectionTitle(doc, labels.professionalExperience, "#000000");
-  for (const item of portfolioContent.experience) {
-    ensureSpace(doc, 85);
-    doc.font("Helvetica-Bold").fontSize(10).text(`${item.role} | ${item.company} | ${localize(item.period, language)}`);
-    for (const highlight of localize(item.highlights, language)) {
-      addBullet(doc, highlight, { color: "#000000", textColor: "#000000", size: 8.7, width: 480 });
+  for (const group of groupExperience(portfolioContent.experience)) {
+    ensureSpace(doc, group.grouped ? 42 + group.items.length * 78 : 85);
+
+    if (group.grouped && group.items.length > 1) {
+      doc.font("Helvetica-Bold").fontSize(10).text(group.company, 48, doc.y, {
+        width: 500,
+        lineGap: 1
+      });
+      doc.moveDown(0.2);
+      for (const item of group.items) {
+        ensureSpace(doc, 78);
+        addAtsExperienceItem(doc, item, language, labels, { grouped: true, indent: true });
+      }
+      continue;
     }
-    doc.font("Helvetica").fontSize(8.5).text(`${labels.technologies}: ${item.tech.join(", ")}`, { width: 500 });
-    doc.moveDown(0.35);
+
+    addAtsExperienceItem(doc, group.items[0], language, labels);
   }
 
   addSectionTitle(doc, labels.projects, "#000000");
@@ -221,7 +296,7 @@ function renderAtsCv(doc, language) {
 await mkdir(outputDirectory, { recursive: true });
 await Promise.all(obsoletePdfAssets.map((fileName) => rm(join(outputDirectory, fileName), { force: true })));
 
-for (const language of languageCodes) {
+for (const language of cvPdfExportLanguages) {
   const exportsForLanguage = getCvPdfExports(language);
 
   await writePdf(exportsForLanguage.modern.fileName, (doc) => renderModernCv(doc, language));

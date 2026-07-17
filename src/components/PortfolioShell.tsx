@@ -59,21 +59,6 @@ const themeStyles: Record<ThemeKey, ThemeStyle> = {
     selectorInactive: "border-zinc-100/15 bg-zinc-100/5 text-zinc-50 hover:bg-zinc-100/10",
     ring: "focus-visible:outline-zinc-100",
     timelineDot: "bg-zinc-100"
-  },
-  sunrise: {
-    shell: "bg-stone-950 text-amber-50",
-    header: "border-amber-100/10 bg-stone-950/80",
-    heroGradient: "from-orange-400/20 via-rose-400/10 to-transparent",
-    card: "border-amber-100/10 bg-amber-50/10 shadow-2xl shadow-orange-950/30",
-    cardMuted: "border-amber-100/10 bg-amber-50/[0.07]",
-    chip: "border-orange-200/30 bg-orange-300/10 text-orange-100",
-    accent: "text-orange-100",
-    primaryButton: "bg-orange-200 text-stone-950 hover:bg-orange-100",
-    secondaryButton: "border-amber-100/20 bg-amber-50/10 text-amber-50 hover:bg-amber-50/15",
-    selectorActive: "border-orange-200 bg-orange-200 text-stone-950",
-    selectorInactive: "border-amber-100/15 bg-amber-50/5 text-amber-50 hover:bg-amber-50/10",
-    ring: "focus-visible:outline-orange-100",
-    timelineDot: "bg-orange-200"
   }
 };
 
@@ -115,6 +100,8 @@ export default function PortfolioShell({ content }: PortfolioShellProps) {
 
   const copy = content.locales[language];
   const themeStyle = themeStyles[theme];
+  const nextTheme = theme === "midnight" ? "graphite" : "midnight";
+  const nextThemeOption = content.themes.find((option) => option.key === nextTheme) ?? content.themes[0];
   const navItems = useMemo(
     () =>
       [
@@ -188,22 +175,18 @@ export default function PortfolioShell({ content }: PortfolioShellProps) {
             </ControlGroup>
 
             <ControlGroup label={copy.controls.themeLabel}>
-              {content.themes.map((option) => (
-                <button
-                  key={option.key}
-                  type="button"
-                  aria-pressed={theme === option.key}
-                  aria-label={`${copy.controls.themeLabel}: ${localize(option.label, language)}`}
-                  onClick={() => setTheme(option.key)}
-                  className={cx(
-                    "rounded-full border px-3 py-1.5 text-xs font-bold outline-none transition",
-                    themeStyle.ring,
-                    theme === option.key ? themeStyle.selectorActive : themeStyle.selectorInactive
-                  )}
-                >
-                  {localize(option.label, language)}
-                </button>
-              ))}
+              <button
+                type="button"
+                aria-label={`${copy.controls.themeLabel}: ${localize(nextThemeOption.label, language)}`}
+                onClick={() => setTheme(theme === "midnight" ? "graphite" : "midnight")}
+                className={cx(
+                  "rounded-full border px-3 py-1.5 text-xs font-bold outline-none transition",
+                  themeStyle.ring,
+                  themeStyle.selectorInactive
+                )}
+              >
+                {localize(nextThemeOption.label, language)}
+              </button>
             </ControlGroup>
           </div>
         </div>
@@ -323,7 +306,11 @@ function ExportActions({
 
   return (
     <div className="no-print mt-8 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-4">
-      <div className="flex flex-wrap gap-3">
+      <details>
+        <summary className={cx("cursor-pointer rounded-full px-4 py-2 text-sm font-bold outline-none transition", theme.primaryButton, theme.ring)}>
+          {copy.downloadsLabel}
+        </summary>
+        <div className="mt-3 flex flex-wrap gap-3">
         <a
           href={cvExports.modern.href}
           download={cvExports.modern.fileName}
@@ -338,7 +325,8 @@ function ExportActions({
         >
           {copy.atsPdfLabel}
         </a>
-      </div>
+        </div>
+      </details>
       <p className="mt-3 text-sm leading-6 opacity-75">
         {copy.pdfHint}
       </p>
