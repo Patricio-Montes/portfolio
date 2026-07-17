@@ -20,12 +20,36 @@ test("export UI downloads generated PDF assets directly", async () => {
   assert.doesNotMatch(shell, /\.xls\b/i);
 });
 
-test("theme selection is a single toggle control instead of mapped theme buttons", async () => {
+test("theme selection is a single cycle control across all themes instead of mapped theme buttons", async () => {
   const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
 
   assert.doesNotMatch(shell, /content\.themes\.map/);
   assert.match(shell, /setTheme\(/);
-  assert.match(shell, /theme === "midnight" \? "graphite" : "midnight"|theme === 'midnight' \? 'graphite' : 'midnight'/);
+  assert.match(shell, /currentThemeIndex/);
+  assert.match(shell, /content\.themes\[\(currentThemeIndex \+ 1\) % content\.themes\.length\]/);
+  assert.match(shell, /setTheme\(nextThemeOption\.key\)/);
+});
+
+
+test("navigation header is sticky and sections account for anchor offset", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+
+  assert.match(shell, /<header[\s\S]*sticky top-0 z-40/);
+  for (const id of ["about", "experience", "skills", "projects", "education"]) {
+    assert.match(shell, new RegExp(`id="${id}"[\\s\\S]*scroll-mt-`), `${id} section needs scroll-margin for sticky header anchors`);
+  }
+  assert.match(shell, /id="contact"[\s\S]*scroll-mt-/);
+});
+
+test("hero card is flippable with an accessible button and not hover-only", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+
+  assert.match(shell, /const \[isHeroCardFlipped, setIsHeroCardFlipped\] = useState\(false\)/);
+  assert.match(shell, /aria-pressed=\{isHeroCardFlipped\}/);
+  assert.match(shell, /copy\.hero\.cardBack/);
+  assert.match(shell, /copy\.hero\.flipToBackLabel/);
+  assert.match(shell, /copy\.hero\.flipToFrontLabel/);
+  assert.doesNotMatch(shell, /hover:[^"']*rotate-y|group-hover:[^"']*rotate-y/i);
 });
 
 test("download UI is one details-summary control with Modern and ATS subitems", async () => {

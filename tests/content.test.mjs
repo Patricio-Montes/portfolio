@@ -7,7 +7,7 @@ import { cvPdfExportLanguages } from "../src/utils/cvExports.ts";
 test("portfolio exposes the required language and theme options", () => {
   assert.deepEqual([...languageCodes], ["en", "es"]);
   assert.deepEqual([...cvPdfExportLanguages], [...languageCodes]);
-  assert.deepEqual([...themeKeys], ["midnight", "graphite"]);
+  assert.deepEqual([...themeKeys], ["midnight", "graphite", "notebook", "editorial"]);
   assert.equal(themeKeys.includes("forest"), false);
   assert.equal(themeKeys.includes("sunrise"), false);
 
@@ -24,8 +24,10 @@ test("portfolio exposes the required language and theme options", () => {
     assert.equal(forbidden.test(publicText), false, `forbidden public copy found: ${forbidden}`);
   }
   assert.ok(portfolioContent.themes.some((theme) => theme.key === "graphite"));
+  assert.ok(portfolioContent.themes.some((theme) => theme.key === "notebook" && theme.label.en === "Notebook" && theme.label.es === "Cuaderno"));
+  assert.ok(portfolioContent.themes.some((theme) => theme.key === "editorial" && theme.label.en === "Editorial" && theme.label.es === "Editorial"));
   assert.ok(portfolioContent.themes.some((theme) => theme.label.es === "Grafito"));
-  assert.equal(portfolioContent.themes.length, 2);
+  assert.equal(portfolioContent.themes.length, 4);
   assert.equal(portfolioContent.languages.length, 2);
 });
 
@@ -103,9 +105,10 @@ test("hero focus chips use the requested professional positioning only", () => {
       "Angular",
       "Google Cloud",
       "Azure",
-      "AI-First",
+      "Clean Code",
       "Clean Architecture"
     ]);
+    assert.equal(portfolioContent.locales[code].hero.focusAreas.includes("AI-First"), false);
     assert.equal(portfolioContent.locales[code].hero.focusAreas.includes("Code review"), false);
   }
 });
@@ -139,7 +142,7 @@ test("page profile summary is concise and covers the required positioning", () =
   }
 });
 
-test("experience ownership and Codeicus ordering match the corrected CV facts", () => {
+test("experience ownership and same-company data preserve verified CV facts", () => {
   const codeicusItems = portfolioContent.experience.filter((item) => item.company === "Codeicus");
 
   assert.equal(codeicusItems.length, 2);
@@ -174,7 +177,8 @@ test("experience ownership and Codeicus ordering match the corrected CV facts", 
   assert.equal(unxItems.length, 2);
   assert.deepEqual(
     unxItems.map((item) => item.role),
-    ["Sr Software Developer", "Software Architect"]
+    ["Sr Software Developer", "Software Architect"],
+    "source data remains chronological; rendering/PDF grouping presents latest role first"
   );
   assert.equal(unxItems[0].period.en, "September 2021 — April 2022");
   assert.equal(unxItems[0].period.es, "Septiembre 2021 — Abril 2022");
@@ -247,6 +251,48 @@ test("added skills and verified public projects are present", () => {
   assert.ok(incoders, "missing Incoders project");
   assert.match(incoders.description.en, /admin panel/i);
   assert.match(incoders.description.en, /financial dashboard/i);
+});
+
+
+test("skills move Redis from Platforms to Databases without duplicates", () => {
+  const databases = portfolioContent.skills.find((group) => group.name.en === "Databases");
+  const platforms = portfolioContent.skills.find((group) => group.name.en === "Platforms");
+
+  assert.ok(databases, "missing Databases skill group");
+  assert.ok(platforms, "missing Platforms skill group");
+  assert.ok(databases.items.includes("Redis"), "Databases must include Redis");
+  assert.equal(platforms.items.includes("Redis"), false, "Platforms must not include Redis");
+
+  const allSkillItems = portfolioContent.skills.flatMap((group) => group.items);
+  assert.equal(allSkillItems.filter((item) => item === "Redis").length, 1, "Redis must not be duplicated");
+});
+
+test("project contexts use corrected company and institution associations", () => {
+  const siegwerk = portfolioContent.projects.find((project) => project.name === "Siegwerk São Paulo implementation");
+  const utnRosario = portfolioContent.projects.find((project) => project.name === "UTN FRRO research project");
+
+  assert.ok(siegwerk);
+  assert.equal(siegwerk.context.en, "Luxsys S.R.L — June 2018");
+  assert.equal(siegwerk.context.es, "Luxsys S.R.L — Junio 2018");
+  assert.ok(utnRosario);
+  assert.equal(utnRosario.context.en, "UTN FRRO — March 2012 to December 2012");
+  assert.equal(utnRosario.context.es, "UTN FRRO — Marzo 2012 a Diciembre 2012");
+});
+
+test("hero card back exposes accessible bilingual professional descriptions", () => {
+  assert.match(portfolioContent.locales.es.hero.cardBack, /Ingeniería de Software/);
+  assert.match(portfolioContent.locales.es.hero.cardBack, /Clean Code y Clean Architecture/);
+  assert.match(portfolioContent.locales.es.hero.cardBack, /Domain-Driven Design/);
+  assert.match(portfolioContent.locales.es.hero.cardBack, /agentes de Inteligencia Artificial especializados/);
+  assert.match(portfolioContent.locales.en.hero.cardBack, /Software Engineering/);
+  assert.match(portfolioContent.locales.en.hero.cardBack, /Clean Code and Clean Architecture/);
+  assert.match(portfolioContent.locales.en.hero.cardBack, /Domain-Driven Design/);
+  assert.match(portfolioContent.locales.en.hero.cardBack, /specialized Artificial Intelligence agents/);
+
+  for (const code of languageCodes) {
+    assert.ok(portfolioContent.locales[code].hero.flipToBackLabel);
+    assert.ok(portfolioContent.locales[code].hero.flipToFrontLabel);
+  }
 });
 
 test("project dependencies stay clean of heavy PDF and Excel packages", async () => {

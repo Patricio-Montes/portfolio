@@ -87,6 +87,16 @@ test("CV exports resolve localized downloadable assets by active language", asyn
 });
 
 test("CV export assets are EN/ES only with no Portuguese PDFs remaining", async () => {
+
+  const databases = portfolioContent.skills.find((group) => group.name.en === "Databases");
+  const platforms = portfolioContent.skills.find((group) => group.name.en === "Platforms");
+  const siegwerk = portfolioContent.projects.find((project) => project.name === "Siegwerk São Paulo implementation");
+  const utnRosario = portfolioContent.projects.find((project) => project.name === "UTN FRRO research project");
+  assert.ok(databases?.items.includes("Redis"), "Databases must include Redis");
+  assert.equal(platforms?.items.includes("Redis"), false);
+  assert.equal(siegwerk?.context.en, "Luxsys S.R.L — June 2018");
+  assert.equal(utnRosario?.context.en, "UTN FRRO — March 2012 to December 2012");
+
   const files = (await readdir(new URL("../public/downloads/", import.meta.url))).filter((file) =>
     /^patricio-montes-cv-(modern|ats)-.+\.pdf$/.test(file)
   );
@@ -166,6 +176,16 @@ test("generated PDF CVs mirror corrected page data", async () => {
     ["IT Developer | October 2016 — December 2018", "Technical Leader | December 2018 — October 2019"]
   );
 
+
+  const databases = portfolioContent.skills.find((group) => group.name.en === "Databases");
+  const platforms = portfolioContent.skills.find((group) => group.name.en === "Platforms");
+  const siegwerk = portfolioContent.projects.find((project) => project.name === "Siegwerk São Paulo implementation");
+  const utnRosario = portfolioContent.projects.find((project) => project.name === "UTN FRRO research project");
+  assert.ok(databases?.items.includes("Redis"), "Databases must include Redis");
+  assert.equal(platforms?.items.includes("Redis"), false);
+  assert.equal(siegwerk?.context.en, "Luxsys S.R.L — June 2018");
+  assert.equal(utnRosario?.context.en, "UTN FRRO — March 2012 to December 2012");
+
   const files = (await readdir(new URL("../public/downloads/", import.meta.url))).filter((file) =>
     /^patricio-montes-cv-(modern|ats)-.+\.pdf$/.test(file)
   );
@@ -185,18 +205,26 @@ test("generated PDF CVs mirror corrected page data", async () => {
       assert.match(pdfText, /Luxsys S\.R\.L/);
       assert.doesNotMatch(pdfText, /ECIC Systems|Technical Support|Web Designer|Luxsys S\.R\.L \/ Freelance/);
       assert.doesNotMatch(pdfText, /March 2020 — December 2020|Marzo 2020 — Diciembre 2020/);
+      const skillStart = language === "en" ? (variant === "modern" ? "CORE SKILLS" : "SKILLS") : (variant === "modern" ? "HABILIDADES PRINCIPALES" : "HABILIDADES");
+      const experienceStart = language === "en" ? (variant === "modern" ? "EXPERIENCE" : "PROFESSIONAL EXPERIENCE") : (variant === "modern" ? "EXPERIENCIA" : "EXPERIENCIA PROFESIONAL");
+      const skillsText = textBetween(
+        pdfText,
+        skillStart,
+        experienceStart
+      );
+      assert.doesNotMatch(skillsText, /Platforms: [\s\S]*Redis|Plataformas: [\s\S]*Redis/);
+      assert.match(skillsText, /Databases: [\s\S]*Redis|Bases de datos: [\s\S]*Redis/);
+      assert.match(pdfText, /Siegwerk São Paulo implementation \| Luxsys S\.R\.L — June 2018|Siegwerk São Paulo implementation \| Luxsys S\.R\.L — Junio 2018/);
+      assert.match(pdfText, /UTN FRRO research project \| UTN FRRO — March 2012 to December 2012|UTN FRRO research project \| UTN FRRO — Marzo 2012 a Diciembre 2012/);
       const unxText = textBetween(pdfText, "UNX Digital / Grupo Prominente", "Codeicus");
       const codeicusText = textBetween(pdfText, "Codeicus", "Luxsys S.R.L");
       const luxsysText = textBetween(pdfText, "Luxsys S.R.L", variant === "modern" ? "SELECTED PROJECTS" : "PROJECTS");
 
       assert.doesNotMatch(unxText, /Ssr \.Net Developer/);
       assert.doesNotMatch(pdfText, /Sr Software Architect/);
-      assert.match(unxText, /Sr Software Developer[\s\S]*September 2021 — April 2022|Sr Software Developer[\s\S]*Septiembre 2021 — Abril 2022/);
-      assert.match(unxText, /Software Architect[\s\S]*April 2022 — November 2022|Software Architect[\s\S]*Abril 2022 — Noviembre 2022/);
-      assert.match(codeicusText, /Ssr \.Net Developer[\s\S]*October 2019 — September 2021|Ssr \.Net Developer[\s\S]*Octubre 2019 — Septiembre 2021/);
-      assert.match(codeicusText, /Sr Software Developer[\s\S]*December 2020 — September 2021|Sr Software Developer[\s\S]*Diciembre 2020 — Septiembre 2021/);
-      assert.match(luxsysText, /IT Developer[\s\S]*October 2016 — December 2018|IT Developer[\s\S]*Octubre 2016 — Diciembre 2018/);
-      assert.match(luxsysText, /Technical Leader[\s\S]*December 2018 — October 2019|Technical Leader[\s\S]*Diciembre 2018 — Octubre 2019/);
+      assert.match(unxText, /Software Architect[\s\S]*Sr Software Developer/, "UNX PDF group must show final role before earlier role");
+      assert.match(codeicusText, /Sr Software Developer[\s\S]*Ssr \.Net Developer/, "Codeicus PDF group must show final role before earlier role");
+      assert.match(luxsysText, /Technical Leader[\s\S]*IT Developer/, "Luxsys PDF group must show final role before earlier role");
       assert.match(pdfText, /Sr Software Developer/);
       assert.match(pdfText, /Technical Leader/);
       assert.match(pdfText, /IT Developer/);

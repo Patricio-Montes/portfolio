@@ -66,6 +66,36 @@ const themeStyles: Record<ThemeKey, ThemeStyle> = {
     selectorInactive: "border-zinc-100/15 bg-zinc-100/5 text-zinc-50 hover:bg-zinc-100/10",
     ring: "focus-visible:outline-zinc-100",
     timelineDot: "bg-zinc-100"
+  },
+  notebook: {
+    shell: "bg-stone-100 text-stone-950",
+    header: "border-stone-300/80 bg-stone-100/90",
+    heroGradient: "from-amber-200/55 via-stone-200/50 to-transparent",
+    card: "border-stone-300 bg-stone-50 shadow-xl shadow-stone-300/40",
+    cardMuted: "border-stone-300 bg-white/70",
+    chip: "border-stone-400/70 bg-white/80 text-stone-800",
+    accent: "text-stone-700",
+    primaryButton: "bg-stone-900 text-stone-50 hover:bg-stone-800",
+    secondaryButton: "border-stone-400 bg-white/80 text-stone-900 hover:bg-stone-200",
+    selectorActive: "border-stone-900 bg-stone-900 text-stone-50",
+    selectorInactive: "border-stone-400 bg-white/80 text-stone-900 hover:bg-stone-200",
+    ring: "focus-visible:outline-stone-800",
+    timelineDot: "bg-stone-700"
+  },
+  editorial: {
+    shell: "bg-[#f6f1e8] text-[#211b16]",
+    header: "border-[#d7c7ad] bg-[#f6f1e8]/90",
+    heroGradient: "from-[#c9a66b]/30 via-[#eadcc3]/50 to-transparent",
+    card: "border-[#d7c7ad] bg-[#fffaf1] shadow-xl shadow-[#d7c7ad]/35",
+    cardMuted: "border-[#d7c7ad] bg-[#fffaf1]/75",
+    chip: "border-[#a98d61]/50 bg-[#f3e5ca] text-[#3a2f24]",
+    accent: "text-[#6d5532]",
+    primaryButton: "bg-[#2d241c] text-[#fffaf1] hover:bg-[#46382b]",
+    secondaryButton: "border-[#a98d61]/60 bg-[#fffaf1] text-[#2d241c] hover:bg-[#f3e5ca]",
+    selectorActive: "border-[#2d241c] bg-[#2d241c] text-[#fffaf1]",
+    selectorInactive: "border-[#a98d61]/60 bg-[#fffaf1] text-[#2d241c] hover:bg-[#f3e5ca]",
+    ring: "focus-visible:outline-[#6d5532]",
+    timelineDot: "bg-[#6d5532]"
   }
 };
 
@@ -88,7 +118,7 @@ function groupExperience(items: readonly ExperienceItem[]): ExperienceGroup[] {
     if (roleChangeCompanies.has(item.company) && previous?.company === item.company && previous.grouped) {
       groups[groups.length - 1] = {
         ...previous,
-        items: [...previous.items, item]
+        items: [item, ...previous.items]
       };
       continue;
     }
@@ -133,8 +163,8 @@ export default function PortfolioShell({ content }: PortfolioShellProps) {
 
   const copy = content.locales[language];
   const themeStyle = themeStyles[theme];
-  const nextTheme = theme === "midnight" ? "graphite" : "midnight";
-  const nextThemeOption = content.themes.find((option) => option.key === nextTheme) ?? content.themes[0];
+  const currentThemeIndex = content.themes.findIndex((option) => option.key === theme);
+  const nextThemeOption = content.themes[(currentThemeIndex + 1) % content.themes.length] ?? content.themes[0];
   const navItems = useMemo(
     () =>
       [
@@ -154,7 +184,7 @@ export default function PortfolioShell({ content }: PortfolioShellProps) {
   }, [language, theme]);
 
   return (
-    <div className={cx("min-h-screen overflow-hidden", themeStyle.shell)}>
+    <div className={cx("min-h-screen", themeStyle.shell)}>
       <a
         href="#main-content"
         className={cx(
@@ -211,7 +241,7 @@ export default function PortfolioShell({ content }: PortfolioShellProps) {
               <button
                 type="button"
                 aria-label={`${copy.controls.themeLabel}: ${localize(nextThemeOption.label, language)}`}
-                onClick={() => setTheme(theme === "midnight" ? "graphite" : "midnight")}
+                onClick={() => setTheme(nextThemeOption.key)}
                 className={cx(
                   "rounded-full border px-3 py-1.5 text-xs font-bold outline-none transition",
                   themeStyle.ring,
@@ -225,7 +255,7 @@ export default function PortfolioShell({ content }: PortfolioShellProps) {
         </div>
       </header>
 
-      <main id="main-content" className="relative">
+      <main id="main-content" className="relative overflow-hidden">
         <Hero content={content} language={language} theme={themeStyle} />
         <About copy={copy.sections.about} theme={themeStyle} />
         <Experience content={content} copy={copy.sections.experience} language={language} theme={themeStyle} />
@@ -257,6 +287,8 @@ function Hero({
   theme: ThemeStyle;
 }) {
   const copy = content.locales[language];
+  const [isHeroCardFlipped, setIsHeroCardFlipped] = useState(false);
+  const heroCardButtonLabel = isHeroCardFlipped ? copy.hero.flipToFrontLabel : copy.hero.flipToBackLabel;
 
   return (
     <section className="relative px-5 py-20 sm:px-8 sm:py-28 lg:px-10" aria-labelledby="hero-title">
@@ -298,28 +330,53 @@ function Hero({
         </div>
 
         <aside className={cx("rounded-[2rem] border p-6", theme.card)} aria-label="Portfolio highlights">
-          <div className="space-y-5">
-            <div>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              aria-pressed={isHeroCardFlipped}
+              onClick={() => setIsHeroCardFlipped((current) => !current)}
+              className={cx(
+                "rounded-full border px-3 py-1.5 text-xs font-bold outline-none transition",
+                theme.ring,
+                theme.selectorInactive
+              )}
+            >
+              {heroCardButtonLabel}
+            </button>
+          </div>
+
+          {isHeroCardFlipped ? (
+            <div className="mt-5">
               <p className="text-sm font-semibold opacity-70">{content.profile.title}</p>
               <p className="mt-2 text-3xl font-black">{content.profile.name}</p>
+              <p className="mt-5 max-h-[34rem] overflow-y-auto pr-1 text-sm leading-7 opacity-85">
+                {copy.hero.cardBack}
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {copy.hero.focusAreas.map((area) => (
-                <span key={area} className={cx("rounded-full border px-3 py-1 text-sm font-medium", theme.chip)}>
-                  {area}
-                </span>
-              ))}
+          ) : (
+            <div className="mt-5 space-y-5">
+              <div>
+                <p className="text-sm font-semibold opacity-70">{content.profile.title}</p>
+                <p className="mt-2 text-3xl font-black">{content.profile.name}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {copy.hero.focusAreas.map((area) => (
+                  <span key={area} className={cx("rounded-full border px-3 py-1 text-sm font-medium", theme.chip)}>
+                    {area}
+                  </span>
+                ))}
+              </div>
+              <div className="grid gap-3">
+                {copy.stats.map((stat) => (
+                  <article key={stat.label} className={cx("rounded-3xl border p-4", theme.cardMuted)}>
+                    <p className={cx("text-3xl font-black", theme.accent)}>{stat.value}</p>
+                    <h2 className="mt-1 font-bold">{stat.label}</h2>
+                    <p className="mt-1 text-sm leading-6 opacity-75">{stat.detail}</p>
+                  </article>
+                ))}
+              </div>
             </div>
-            <div className="grid gap-3">
-              {copy.stats.map((stat) => (
-                <article key={stat.label} className={cx("rounded-3xl border p-4", theme.cardMuted)}>
-                  <p className={cx("text-3xl font-black", theme.accent)}>{stat.value}</p>
-                  <h2 className="mt-1 font-bold">{stat.label}</h2>
-                  <p className="mt-1 text-sm leading-6 opacity-75">{stat.detail}</p>
-                </article>
-              ))}
-            </div>
-          </div>
+          )}
         </aside>
       </div>
     </section>
@@ -375,7 +432,7 @@ function About({
   theme: ThemeStyle;
 }) {
   return (
-    <section id="about" aria-labelledby="about-title" className="px-5 py-16 sm:px-8 lg:px-10">
+    <section id="about" aria-labelledby="about-title" className="scroll-mt-28 px-5 py-16 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeading id="about" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
         <div className="mt-8 grid gap-4 lg:grid-cols-2">
@@ -404,7 +461,7 @@ function Experience({
   const experienceGroups = groupExperience(content.experience);
 
   return (
-    <section id="experience" aria-labelledby="experience-title" className="px-5 py-16 sm:px-8 lg:px-10">
+    <section id="experience" aria-labelledby="experience-title" className="scroll-mt-28 px-5 py-16 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeading id="experience" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
         <ol className="mt-10 space-y-5">
@@ -480,7 +537,7 @@ function Skills({
   theme: ThemeStyle;
 }) {
   return (
-    <section id="skills" aria-labelledby="skills-title" className="px-5 py-16 sm:px-8 lg:px-10">
+    <section id="skills" aria-labelledby="skills-title" className="scroll-mt-28 px-5 py-16 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeading id="skills" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
         <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -514,7 +571,7 @@ function Projects({
   theme: ThemeStyle;
 }) {
   return (
-    <section id="projects" aria-labelledby="projects-title" className="px-5 py-16 sm:px-8 lg:px-10">
+    <section id="projects" aria-labelledby="projects-title" className="scroll-mt-28 px-5 py-16 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeading id="projects" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
         <div className="mt-10 grid gap-4 md:grid-cols-2">
@@ -553,7 +610,7 @@ function Education({
   theme: ThemeStyle;
 }) {
   return (
-    <section id="education" aria-labelledby="education-title" className="px-5 py-16 sm:px-8 lg:px-10">
+    <section id="education" aria-labelledby="education-title" className="scroll-mt-28 px-5 py-16 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeading id="education" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
         <div className="mt-10 grid gap-4 lg:grid-cols-2">
@@ -605,7 +662,7 @@ function Contact({
   ] as const;
 
   return (
-    <footer id="contact" aria-labelledby="contact-title" className="px-5 py-16 sm:px-8 lg:px-10">
+    <footer id="contact" aria-labelledby="contact-title" className="scroll-mt-28 px-5 py-16 sm:px-8 lg:px-10">
       <div className={cx("mx-auto max-w-7xl rounded-[2rem] border p-8 sm:p-10", theme.card)}>
         <SectionHeading id="contact" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
         <div className="mt-8 grid gap-3 md:grid-cols-3">

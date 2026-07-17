@@ -87,7 +87,7 @@ function groupExperience(items) {
     const previous = groups.at(-1);
 
     if (roleChangeCompanies.has(item.company) && previous?.company === item.company && previous.grouped) {
-      previous.items.push(item);
+      previous.items.unshift(item);
       continue;
     }
 
@@ -221,11 +221,13 @@ function renderModernCv(doc, language) {
   }
 
   addSectionTitle(doc, labels.selectedProjects, "#0F172A");
-  for (const project of portfolioContent.projects.filter((projectItem) => projectItem.link).slice(0, 3)) {
+  for (const project of portfolioContent.projects) {
     ensureSpace(doc, 62);
-    doc.font("Helvetica-Bold").fontSize(10).fillColor("#111827").text(project.name);
+    doc.font("Helvetica-Bold").fontSize(10).fillColor("#111827").text(`${project.name} | ${localize(project.context, language)}`);
     doc.font("Helvetica").fontSize(8.7).fillColor("#334155").text(localize(project.description, language), { width: 500, lineGap: 1.5 });
-    doc.fontSize(8).fillColor("#2563EB").text(project.link, { width: 500 });
+    if (project.link) {
+      doc.fontSize(8).fillColor("#2563EB").text(project.link, { width: 500 });
+    }
     doc.moveDown(0.45);
   }
 

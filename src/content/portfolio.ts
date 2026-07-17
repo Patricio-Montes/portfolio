@@ -1,5 +1,5 @@
 export const languageCodes = ["en", "es"] as const;
-export const themeKeys = ["midnight", "graphite"] as const;
+export const themeKeys = ["midnight", "graphite", "notebook", "editorial"] as const;
 
 export type LanguageCode = (typeof languageCodes)[number];
 export type ThemeKey = (typeof themeKeys)[number];
@@ -46,6 +46,20 @@ export const portfolioContent = {
         en: "Graphite",
         es: "Grafito"
       }
+    },
+    {
+      key: "notebook",
+      label: {
+        en: "Notebook",
+        es: "Cuaderno"
+      }
+    },
+    {
+      key: "editorial",
+      label: {
+        en: "Editorial",
+        es: "Editorial"
+      }
     }
   ],
   locales: {
@@ -76,7 +90,10 @@ export const portfolioContent = {
         primaryCta: "Contact me",
         secondaryCta: "View experience",
         availability: "Available for software development, architecture support, and integration work.",
-        focusAreas: [".NET", "Angular", "Google Cloud", "Azure", "AI-First", "Clean Architecture"]
+        flipToBackLabel: "Read professional description",
+        flipToFrontLabel: "Back to highlights",
+        cardBack: "Software Engineering. More than 10 years of experience developing solutions for companies across different sectors. My approach combines software architecture, good development practices, and automation to build maintainable, scalable, high-quality products. I believe good design reduces costs, makes product evolution easier, and minimizes long-term risk. I work following the principles of Robert C. Martin (Clean Code and Clean Architecture) and Eric Evans (Domain-Driven Design), applying design patterns, industry standards, and methodologies such as Spec-Driven Development (SDD) and Test-Driven Development (TDD) to deliver robust, testable, easy-to-maintain solutions. I currently enhance my work through an ecosystem of specialized Artificial Intelligence agents that collaborate on analysis, design, development, and validation tasks. Every architecture, quality, and design decision remains under my direction and technical judgment, using AI as a tool to increase productivity without compromising quality. I stay continuously up to date with technology and enjoy transforming business needs into reliable, scalable solutions prepared to grow.",
+        focusAreas: [".NET", "Angular", "Google Cloud", "Azure", "Clean Code", "Clean Architecture"]
       },
       stats: [
         {
@@ -164,7 +181,10 @@ export const portfolioContent = {
         primaryCta: "Contactarme",
         secondaryCta: "Ver experiencia",
         availability: "Disponible para desarrollo de software, soporte de arquitectura e integraciones.",
-        focusAreas: [".NET", "Angular", "Google Cloud", "Azure", "AI-First", "Clean Architecture"]
+        flipToBackLabel: "Leer descripción profesional",
+        flipToFrontLabel: "Volver a destacados",
+        cardBack: "Ingeniería de Software. Más de 10 años de experiencia desarrollando soluciones para empresas de distintos sectores. Mi enfoque combina arquitectura de software, buenas prácticas de desarrollo y automatización para construir productos mantenibles, escalables y de alta calidad. Creo que un buen diseño reduce costos, facilita la evolución del producto y minimiza riesgos a largo plazo. Trabajo siguiendo los principios de Robert C. Martin (Clean Code y Clean Architecture) y Eric Evans (Domain-Driven Design), aplicando patrones de diseño, estándares de la industria y metodologías como Spec-Driven Development (SDD) y Test-Driven Development (TDD) para entregar soluciones robustas, testeables y fáciles de mantener. Actualmente potencio mi trabajo mediante un ecosistema de agentes de Inteligencia Artificial especializados que colaboran en tareas de análisis, diseño, desarrollo y validación. Todas las decisiones de arquitectura, calidad y diseño permanecen bajo mi dirección y criterio técnico, utilizando la IA como una herramienta para aumentar la productividad sin comprometer la calidad. Me mantengo en constante actualización tecnológica y disfruto transformar necesidades de negocio en soluciones confiables, escalables y preparadas para crecer.",
+        focusAreas: [".NET", "Angular", "Google Cloud", "Azure", "Clean Code", "Clean Architecture"]
       },
       stats: [
         {
@@ -372,14 +392,14 @@ export const portfolioContent = {
         en: "Databases",
         es: "Bases de datos"
       },
-      items: ["SQL Server", "PostgreSQL", "MySQL", "Supabase", "MongoDB"]
+      items: ["SQL Server", "PostgreSQL", "MySQL", "Supabase", "MongoDB", "Redis"]
     },
     {
       name: {
         en: "Platforms",
         es: "Plataformas"
       },
-      items: ["Azure Platform", "Google Cloud Platform", "Redis", "Azure Service Bus"]
+      items: ["Azure Platform", "Google Cloud Platform", "Azure Service Bus"]
     },
     {
       name: {
@@ -448,8 +468,8 @@ export const portfolioContent = {
     {
       name: "Siegwerk São Paulo implementation",
       context: {
-        en: "June 2018",
-        es: "Junio 2018"
+        en: "Luxsys S.R.L — June 2018",
+        es: "Luxsys S.R.L — Junio 2018"
       },
       description: {
         en: "Productive integration between Softland ERP and LuxEvent BPM at the Diadema plant.",
@@ -482,10 +502,10 @@ export const portfolioContent = {
       link: ""
     },
     {
-      name: "UTN Rosario research project",
+      name: "UTN FRRO research project",
       context: {
-        en: "March 2012 to December 2012",
-        es: "Marzo 2012 a Diciembre 2012"
+        en: "UTN FRRO — March 2012 to December 2012",
+        es: "UTN FRRO — Marzo 2012 a Diciembre 2012"
       },
       description: {
         en: "Administration resources chair project focused on improving faculty processes.",
