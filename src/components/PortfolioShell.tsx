@@ -7,7 +7,7 @@ import type {
   PortfolioContent,
   ThemeKey
 } from "@/content/portfolio";
-import { cvPdfExports } from "@/utils/cvExports";
+import { getCvPdfExports } from "@/utils/cvExports";
 
 type PortfolioShellProps = {
   content: PortfolioContent;
@@ -276,7 +276,7 @@ function Hero({
             </a>
           </div>
 
-          <ExportActions copy={copy.exports} theme={theme} />
+          <ExportActions copy={copy.exports} language={language} theme={theme} />
 
           <p className="mt-6 text-sm leading-6 opacity-70">{copy.hero.availability}</p>
         </div>
@@ -312,24 +312,28 @@ function Hero({
 
 function ExportActions({
   copy,
+  language,
   theme
 }: {
   copy: PortfolioContent["locales"][LanguageCode]["exports"];
+  language: LanguageCode;
   theme: ThemeStyle;
 }) {
+  const cvExports = getCvPdfExports(language);
+
   return (
     <div className="no-print mt-8 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-4">
       <div className="flex flex-wrap gap-3">
         <a
-          href={cvPdfExports.modern.href}
-          download={cvPdfExports.modern.fileName}
+          href={cvExports.modern.href}
+          download={cvExports.modern.fileName}
           className={cx("rounded-full px-4 py-2 text-sm font-bold outline-none transition", theme.primaryButton, theme.ring)}
         >
           {copy.modernPdfLabel}
         </a>
         <a
-          href={cvPdfExports.ats.href}
-          download={cvPdfExports.ats.fileName}
+          href={cvExports.ats.href}
+          download={cvExports.ats.fileName}
           className={cx("rounded-full border px-4 py-2 text-sm font-bold outline-none transition", theme.secondaryButton, theme.ring)}
         >
           {copy.atsPdfLabel}

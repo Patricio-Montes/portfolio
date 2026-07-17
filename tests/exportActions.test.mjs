@@ -5,10 +5,11 @@ import test from "node:test";
 test("export UI downloads generated PDF assets directly", async () => {
   const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
 
-  assert.match(shell, /cvPdfExports\.modern\.href/);
-  assert.match(shell, /cvPdfExports\.modern\.fileName/);
-  assert.match(shell, /cvPdfExports\.ats\.href/);
-  assert.match(shell, /cvPdfExports\.ats\.fileName/);
+  assert.match(shell, /getCvPdfExports\(language\)/);
+  assert.match(shell, /cvExports\.modern\.href/);
+  assert.match(shell, /cvExports\.modern\.fileName/);
+  assert.match(shell, /cvExports\.ats\.href/);
+  assert.match(shell, /cvExports\.ats\.fileName/);
   assert.match(shell, /\bdownload=/);
 
   assert.doesNotMatch(shell, /printCurrentPage/);

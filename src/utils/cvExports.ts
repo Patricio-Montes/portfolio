@@ -1,6 +1,10 @@
+import type { LanguageCode } from "@/content/portfolio";
+
 export const cvPdfVariants = ["modern", "ats"] as const;
+export const cvPdfExportLanguages = ["en", "es", "pt"] as const;
 
 export type CvPdfVariant = (typeof cvPdfVariants)[number];
+export type CvPdfExportLanguage = (typeof cvPdfExportLanguages)[number];
 
 export type CvPdfExport = {
   label: string;
@@ -10,15 +14,31 @@ export type CvPdfExport = {
 
 const cvPdfBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-export const cvPdfExports: Record<CvPdfVariant, CvPdfExport> = {
-  modern: {
-    label: "Download Modern PDF CV",
-    fileName: "patricio-montes-cv-modern.pdf",
-    href: `${cvPdfBasePath}/downloads/patricio-montes-cv-modern.pdf`
+function buildExport(fileName: string, label: string): CvPdfExport {
+  return {
+    label,
+    fileName,
+    href: `${cvPdfBasePath}/downloads/${fileName}`
+  };
+}
+
+export const cvPdfExports: Record<CvPdfExportLanguage, Record<CvPdfVariant, CvPdfExport>> = {
+  en: {
+    modern: buildExport("patricio-montes-cv-modern-en.pdf", "Download Modern PDF CV"),
+    ats: buildExport("patricio-montes-cv-ats-en.pdf", "Download ATS PDF CV")
   },
-  ats: {
-    label: "Download ATS PDF CV",
-    fileName: "patricio-montes-cv-ats.pdf",
-    href: `${cvPdfBasePath}/downloads/patricio-montes-cv-ats.pdf`
+  es: {
+    modern: buildExport("patricio-montes-cv-modern-es.pdf", "Download Modern PDF CV"),
+    ats: buildExport("patricio-montes-cv-ats-es.pdf", "Download ATS PDF CV")
+  },
+  pt: {
+    modern: buildExport("patricio-montes-cv-modern-pt.pdf", "Download Modern PDF CV"),
+    ats: buildExport("patricio-montes-cv-ats-pt.pdf", "Download ATS PDF CV")
   }
 };
+
+export function getCvPdfExports(language: LanguageCode): Record<CvPdfVariant, CvPdfExport> {
+  return cvPdfExports[language];
+}
+
+export const cvPdfDefaultExports: Record<CvPdfVariant, CvPdfExport> = cvPdfExports.en;

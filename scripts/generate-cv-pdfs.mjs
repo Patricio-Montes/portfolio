@@ -1,17 +1,56 @@
 import { createWriteStream } from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, rm } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { finished } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
-import { portfolioContent } from "../src/content/portfolio.ts";
-import { cvPdfExports } from "../src/utils/cvExports.ts";
+import { languageCodes, portfolioContent } from "../src/content/portfolio.ts";
+import { getCvPdfExports } from "../src/utils/cvExports.ts";
 
 const rootDirectory = dirname(fileURLToPath(new URL("../package.json", import.meta.url)));
 const outputDirectory = join(rootDirectory, "public", "downloads");
-const language = "en";
+const obsoletePdfAssets = ["patricio-montes-cv-modern.pdf", "patricio-montes-cv-ats.pdf"];
 
-function localize(value) {
+const sectionLabels = {
+  en: {
+    coreSkills: "Core skills",
+    experience: "Experience",
+    selectedProjects: "Selected projects",
+    educationTraining: "Education and training",
+    professionalSummary: "Professional summary",
+    skills: "Skills",
+    professionalExperience: "Professional experience",
+    projects: "Projects",
+    education: "Education",
+    technologies: "Technologies"
+  },
+  es: {
+    coreSkills: "Habilidades principales",
+    experience: "Experiencia",
+    selectedProjects: "Proyectos seleccionados",
+    educationTraining: "Educación y formación",
+    professionalSummary: "Resumen profesional",
+    skills: "Habilidades",
+    professionalExperience: "Experiencia profesional",
+    projects: "Proyectos",
+    education: "Educación",
+    technologies: "Tecnologías"
+  },
+  pt: {
+    coreSkills: "Competências principais",
+    experience: "Experiência",
+    selectedProjects: "Projetos selecionados",
+    educationTraining: "Educação e formação",
+    professionalSummary: "Resumo profissional",
+    skills: "Competências",
+    professionalExperience: "Experiência profissional",
+    projects: "Projetos",
+    education: "Educação",
+    technologies: "Tecnologias"
+  }
+};
+
+function localize(value, language) {
   return value[language];
 }
 
@@ -67,8 +106,9 @@ async function writePdf(fileName, render) {
   await finished(output);
 }
 
-function renderModernCv(doc) {
+function renderModernCv(doc, language) {
   const copy = portfolioContent.locales[language];
+  const labels = sectionLabels[language];
 
   doc.rect(0, 0, doc.page.width, 145).fill("#111827");
   doc.fillColor("#F8FAFC").font("Helvetica-Bold").fontSize(25).text(portfolioContent.profile.name, 48, 42, {
@@ -88,24 +128,24 @@ function renderModernCv(doc) {
     lineGap: 2
   });
 
-  addSectionTitle(doc, "Core skills", "#0F172A");
+  addSectionTitle(doc, labels.coreSkills, "#0F172A");
   const skills = portfolioContent.skills
-    .map((group) => `${localize(group.name)}: ${group.items.join(", ")}`)
+    .map((group) => `${localize(group.name, language)}: ${group.items.join(", ")}`)
     .join("  •  ");
   doc.font("Helvetica").fontSize(9.2).fillColor("#334155").text(skills, { width: 500, lineGap: 2 });
 
-  addSectionTitle(doc, "Experience", "#0F172A");
+  addSectionTitle(doc, labels.experience, "#0F172A");
   for (const item of portfolioContent.experience) {
     ensureSpace(doc, 92);
     doc.font("Helvetica-Bold").fontSize(10.7).fillColor("#111827").text(`${item.role} · ${item.company}`, {
       width: 350,
       continued: true
     });
-    doc.font("Helvetica").fontSize(8.5).fillColor("#64748B").text(localize(item.period), {
+    doc.font("Helvetica").fontSize(8.5).fillColor("#64748B").text(localize(item.period, language), {
       align: "right"
     });
     doc.moveDown(0.25);
-    for (const highlight of localize(item.highlights).slice(0, 2)) {
+    for (const highlight of localize(item.highlights, language).slice(0, 2)) {
       addBullet(doc, highlight, { size: 8.8, width: 480 });
     }
     doc.font("Helvetica").fontSize(8).fillColor("#475569").text(item.tech.join(" · "), {
@@ -114,69 +154,76 @@ function renderModernCv(doc) {
     doc.moveDown(0.35);
   }
 
-  addSectionTitle(doc, "Selected projects", "#0F172A");
+  addSectionTitle(doc, labels.selectedProjects, "#0F172A");
   for (const project of portfolioContent.projects.filter((projectItem) => projectItem.link).slice(0, 3)) {
     ensureSpace(doc, 62);
     doc.font("Helvetica-Bold").fontSize(10).fillColor("#111827").text(project.name);
-    doc.font("Helvetica").fontSize(8.7).fillColor("#334155").text(localize(project.description), { width: 500, lineGap: 1.5 });
+    doc.font("Helvetica").fontSize(8.7).fillColor("#334155").text(localize(project.description, language), { width: 500, lineGap: 1.5 });
     doc.fontSize(8).fillColor("#2563EB").text(project.link, { width: 500 });
     doc.moveDown(0.45);
   }
 
-  addSectionTitle(doc, "Education and training", "#0F172A");
+  addSectionTitle(doc, labels.educationTraining, "#0F172A");
   for (const item of portfolioContent.education.slice(0, 5)) {
     ensureSpace(doc, 42);
-    doc.font("Helvetica-Bold").fontSize(9).fillColor("#111827").text(localize(item.name), { continued: true });
+    doc.font("Helvetica-Bold").fontSize(9).fillColor("#111827").text(localize(item.name, language), { continued: true });
     doc.font("Helvetica").fontSize(8).fillColor("#64748B").text(` · ${item.institution}`);
   }
 }
 
-function renderAtsCv(doc) {
+function renderAtsCv(doc, language) {
   const copy = portfolioContent.locales[language];
+  const labels = sectionLabels[language];
 
   doc.font("Helvetica-Bold").fontSize(18).fillColor("#000000").text(portfolioContent.profile.name);
   doc.font("Helvetica").fontSize(10).text(portfolioContent.profile.title);
   doc.moveDown(0.35).fontSize(9).text(publicContactLines().join(" | "), { width: 500 });
 
-  addSectionTitle(doc, "Professional summary", "#000000");
+  addSectionTitle(doc, labels.professionalSummary, "#000000");
   doc.font("Helvetica").fontSize(10).fillColor("#000000").text(copy.hero.subtitle, { width: 500, lineGap: 2 });
 
-  addSectionTitle(doc, "Skills", "#000000");
+  addSectionTitle(doc, labels.skills, "#000000");
   for (const group of portfolioContent.skills) {
-    doc.font("Helvetica-Bold").fontSize(9.5).text(`${localize(group.name)}: `, { continued: true });
+    doc.font("Helvetica-Bold").fontSize(9.5).text(`${localize(group.name, language)}: `, { continued: true });
     doc.font("Helvetica").fontSize(9.5).text(group.items.join(", "), { width: 500 });
   }
 
-  addSectionTitle(doc, "Professional experience", "#000000");
+  addSectionTitle(doc, labels.professionalExperience, "#000000");
   for (const item of portfolioContent.experience) {
     ensureSpace(doc, 85);
-    doc.font("Helvetica-Bold").fontSize(10).text(`${item.role} | ${item.company} | ${localize(item.period)}`);
-    for (const highlight of localize(item.highlights)) {
+    doc.font("Helvetica-Bold").fontSize(10).text(`${item.role} | ${item.company} | ${localize(item.period, language)}`);
+    for (const highlight of localize(item.highlights, language)) {
       addBullet(doc, highlight, { color: "#000000", textColor: "#000000", size: 8.7, width: 480 });
     }
-    doc.font("Helvetica").fontSize(8.5).text(`Technologies: ${item.tech.join(", ")}`, { width: 500 });
+    doc.font("Helvetica").fontSize(8.5).text(`${labels.technologies}: ${item.tech.join(", ")}`, { width: 500 });
     doc.moveDown(0.35);
   }
 
-  addSectionTitle(doc, "Projects", "#000000");
+  addSectionTitle(doc, labels.projects, "#000000");
   for (const project of portfolioContent.projects) {
     ensureSpace(doc, 55);
-    doc.font("Helvetica-Bold").fontSize(9.5).text(`${project.name} | ${localize(project.context)}`);
-    doc.font("Helvetica").fontSize(8.7).text([localize(project.description), project.link].filter(Boolean).join(" "), {
+    doc.font("Helvetica-Bold").fontSize(9.5).text(`${project.name} | ${localize(project.context, language)}`);
+    doc.font("Helvetica").fontSize(8.7).text([localize(project.description, language), project.link].filter(Boolean).join(" "), {
       width: 500,
       lineGap: 1.5
     });
     doc.moveDown(0.35);
   }
 
-  addSectionTitle(doc, "Education", "#000000");
+  addSectionTitle(doc, labels.education, "#000000");
   for (const item of portfolioContent.education) {
     ensureSpace(doc, 36);
-    doc.font("Helvetica-Bold").fontSize(9).text(`${localize(item.name)} | ${item.institution}`);
-    doc.font("Helvetica").fontSize(8.5).text(`${localize(item.period)} | ${localize(item.details)}`, { width: 500 });
+    doc.font("Helvetica-Bold").fontSize(9).text(`${localize(item.name, language)} | ${item.institution}`);
+    doc.font("Helvetica").fontSize(8.5).text(`${localize(item.period, language)} | ${localize(item.details, language)}`, { width: 500 });
   }
 }
 
 await mkdir(outputDirectory, { recursive: true });
-await writePdf(cvPdfExports.modern.fileName, renderModernCv);
-await writePdf(cvPdfExports.ats.fileName, renderAtsCv);
+await Promise.all(obsoletePdfAssets.map((fileName) => rm(join(outputDirectory, fileName), { force: true })));
+
+for (const language of languageCodes) {
+  const exportsForLanguage = getCvPdfExports(language);
+
+  await writePdf(exportsForLanguage.modern.fileName, (doc) => renderModernCv(doc, language));
+  await writePdf(exportsForLanguage.ats.fileName, (doc) => renderAtsCv(doc, language));
+}
