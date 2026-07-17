@@ -8,8 +8,17 @@ function extractPdfText(pdf) {
   return [...pdf.toString("latin1").matchAll(/<([0-9A-Fa-f]+)>/g)]
     .map((match) => Buffer.from(match[1], "hex").toString("latin1"))
     .join("")
+    .replace(/\x97/g, "—")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function textBetween(text, start, end) {
+  const startIndex = text.indexOf(start);
+  assert.notEqual(startIndex, -1, `missing start marker: ${start}`);
+  const endIndex = text.indexOf(end, startIndex + start.length);
+
+  return endIndex === -1 ? text.slice(startIndex) : text.slice(startIndex, endIndex);
 }
 
 test("CV exports expose downloadable Modern and ATS PDF assets", async () => {
@@ -114,6 +123,10 @@ test("generated PDF summaries mirror the concise page summary", async () => {
       const pdfText = extractPdfText(pdf);
 
       assert.match(pdfText, new RegExp(expectedSummary.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+      if (language === "es") {
+        assert.match(pdfText, /Desarrollador de Software con 10\+/);
+        assert.doesNotMatch(pdfText, /Ingeniero de software con 10\+/);
+      }
     }
   }
 });
@@ -123,6 +136,9 @@ test("generated PDF CVs mirror corrected page data", async () => {
   const pageText = JSON.stringify(portfolioContent);
   const frameworks = portfolioContent.skills.find((group) => group.name.en === "Frameworks");
   const sideas = portfolioContent.experience.find((item) => item.company === "Sideas");
+  const unxItems = portfolioContent.experience.filter((item) => item.company === "UNX Digital / Grupo Prominente");
+  const codeicusItems = portfolioContent.experience.filter((item) => item.company === "Codeicus");
+  const luxsysItems = portfolioContent.experience.filter((item) => item.company === "Luxsys S.R.L");
 
   assert.deepEqual([...languageCodes], ["en", "es"]);
   assert.deepEqual([...cvPdfExportLanguages], ["en", "es"]);
@@ -135,7 +151,20 @@ test("generated PDF CVs mirror corrected page data", async () => {
   assert.match(pageText, /DDD/);
   assert.match(pageText, /Codeicus/);
   assert.match(pageText, /Luxsys S\.R\.L/);
-  assert.match(pageText, /ECIC Systems/);
+  assert.doesNotMatch(pageText, /ECIC Systems|Technical Support|Web Designer|Luxsys S\.R\.L \/ Freelance/);
+  assert.deepEqual(
+    unxItems.map((item) => `${item.role} | ${item.period.en}`),
+    ["Sr Software Developer | September 2021 — April 2022", "Software Architect | April 2022 — November 2022"]
+  );
+  assert.equal(unxItems.some((item) => item.role === "Ssr .Net Developer"), false);
+  assert.deepEqual(
+    codeicusItems.map((item) => `${item.role} | ${item.period.en}`),
+    ["Ssr .Net Developer | October 2019 — September 2021", "Sr Software Developer | December 2020 — September 2021"]
+  );
+  assert.deepEqual(
+    luxsysItems.map((item) => `${item.role} | ${item.period.en}`),
+    ["IT Developer | October 2016 — December 2018", "Technical Leader | December 2018 — October 2019"]
+  );
 
   const files = (await readdir(new URL("../public/downloads/", import.meta.url))).filter((file) =>
     /^patricio-montes-cv-(modern|ats)-.+\.pdf$/.test(file)
@@ -154,12 +183,23 @@ test("generated PDF CVs mirror corrected page data", async () => {
       assert.match(pdfText, /Sideas[\s\S]*Angular Material/);
       assert.match(pdfText, /Codeicus/);
       assert.match(pdfText, /Luxsys S\.R\.L/);
-      assert.match(pdfText, /ECIC Systems/);
-      assert.match(pdfText, /Ssr \.Net Developer/);
+      assert.doesNotMatch(pdfText, /ECIC Systems|Technical Support|Web Designer|Luxsys S\.R\.L \/ Freelance/);
+      assert.doesNotMatch(pdfText, /March 2020 — December 2020|Marzo 2020 — Diciembre 2020/);
+      const unxText = textBetween(pdfText, "UNX Digital / Grupo Prominente", "Codeicus");
+      const codeicusText = textBetween(pdfText, "Codeicus", "Luxsys S.R.L");
+      const luxsysText = textBetween(pdfText, "Luxsys S.R.L", variant === "modern" ? "SELECTED PROJECTS" : "PROJECTS");
+
+      assert.doesNotMatch(unxText, /Ssr \.Net Developer/);
+      assert.doesNotMatch(pdfText, /Sr Software Architect/);
+      assert.match(unxText, /Sr Software Developer[\s\S]*September 2021 — April 2022|Sr Software Developer[\s\S]*Septiembre 2021 — Abril 2022/);
+      assert.match(unxText, /Software Architect[\s\S]*April 2022 — November 2022|Software Architect[\s\S]*Abril 2022 — Noviembre 2022/);
+      assert.match(codeicusText, /Ssr \.Net Developer[\s\S]*October 2019 — September 2021|Ssr \.Net Developer[\s\S]*Octubre 2019 — Septiembre 2021/);
+      assert.match(codeicusText, /Sr Software Developer[\s\S]*December 2020 — September 2021|Sr Software Developer[\s\S]*Diciembre 2020 — Septiembre 2021/);
+      assert.match(luxsysText, /IT Developer[\s\S]*October 2016 — December 2018|IT Developer[\s\S]*Octubre 2016 — Diciembre 2018/);
+      assert.match(luxsysText, /Technical Leader[\s\S]*December 2018 — October 2019|Technical Leader[\s\S]*Diciembre 2018 — Octubre 2019/);
       assert.match(pdfText, /Sr Software Developer/);
       assert.match(pdfText, /Technical Leader/);
       assert.match(pdfText, /IT Developer/);
-      assert.match(pdfText, /Technical Support/);
       assert.match(pdfText, /Ionic/);
       assert.match(pdfText, /DDD/);
     }

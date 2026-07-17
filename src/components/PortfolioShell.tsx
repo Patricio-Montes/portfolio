@@ -13,6 +13,13 @@ type PortfolioShellProps = {
   content: PortfolioContent;
 };
 
+type ExperienceItem = PortfolioContent["experience"][number];
+type ExperienceGroup = {
+  company: string;
+  grouped: boolean;
+  items: readonly ExperienceItem[];
+};
+
 type ThemeStyle = {
   shell: string;
   header: string;
@@ -68,6 +75,32 @@ function cx(...values: Array<string | false | null | undefined>) {
 
 function localize<T>(value: Readonly<Record<LanguageCode, T>>, language: LanguageCode): T {
   return value[language];
+}
+
+const roleChangeCompanies = new Set(["Codeicus", "Luxsys S.R.L", "UNX Digital / Grupo Prominente"]);
+
+function groupExperience(items: readonly ExperienceItem[]): ExperienceGroup[] {
+  const groups: ExperienceGroup[] = [];
+
+  for (const item of items) {
+    const previous = groups.at(-1);
+
+    if (roleChangeCompanies.has(item.company) && previous?.company === item.company && previous.grouped) {
+      groups[groups.length - 1] = {
+        ...previous,
+        items: [...previous.items, item]
+      };
+      continue;
+    }
+
+    groups.push({
+      company: item.company,
+      grouped: roleChangeCompanies.has(item.company),
+      items: [item]
+    });
+  }
+
+  return groups;
 }
 
 function SectionHeading({
@@ -368,45 +401,70 @@ function Experience({
   language: LanguageCode;
   theme: ThemeStyle;
 }) {
+  const experienceGroups = groupExperience(content.experience);
+
   return (
     <section id="experience" aria-labelledby="experience-title" className="px-5 py-16 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeading id="experience" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
         <ol className="mt-10 space-y-5">
-          {content.experience.map((item) => (
-            <li key={`${item.company}-${item.role}-${item.period.en}`} className={cx("relative rounded-[1.75rem] border p-6", theme.card)}>
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className={cx("h-3 w-3 rounded-full", theme.timelineDot)} aria-hidden="true" />
-                    <p className={cx("text-sm font-bold uppercase tracking-[0.25em]", theme.accent)}>
-                      {localize(item.period, language)}
-                    </p>
-                  </div>
-                  <h3 className="mt-3 text-2xl font-black">{item.role}</h3>
-                  <p className="mt-1 font-semibold opacity-80">{item.company}</p>
-                </div>
-                <div className="flex max-w-xl flex-wrap gap-2 lg:justify-end">
-                  {item.tech.map((tech) => (
-                    <span key={tech} className={cx("rounded-full border px-3 py-1 text-xs font-semibold", theme.chip)}>
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <ul className="mt-5 grid gap-3 text-sm leading-7 opacity-85">
-                {localize(item.highlights as LocalizedList, language).map((highlight) => (
-                  <li key={highlight} className="flex gap-3">
-                    <span className={cx("mt-3 h-1.5 w-1.5 flex-none rounded-full", theme.timelineDot)} aria-hidden="true" />
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-            </li>
+          {experienceGroups.map((group) => (
+            <ExperienceGroupCard key={`${group.company}-${group.items[0].period.en}`} group={group} language={language} theme={theme} />
           ))}
         </ol>
       </div>
     </section>
+  );
+}
+
+function ExperienceGroupCard({
+  group,
+  language,
+  theme
+}: {
+  group: ExperienceGroup;
+  language: LanguageCode;
+  theme: ThemeStyle;
+}) {
+  const isGrouped = group.grouped && group.items.length > 1;
+
+  return (
+    <li className={cx("relative rounded-[1.75rem] border p-6", theme.card)}>
+      {isGrouped ? <h3 className="text-2xl font-black">{group.company}</h3> : null}
+      <div className={cx(isGrouped && "mt-5 space-y-6")}>
+        {group.items.map((item) => (
+          <article key={`${item.company}-${item.role}-${item.period.en}`}>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className={cx("h-3 w-3 rounded-full", theme.timelineDot)} aria-hidden="true" />
+                  <p className={cx("text-sm font-bold uppercase tracking-[0.25em]", theme.accent)}>
+                    {localize(item.period, language)}
+                  </p>
+                </div>
+                <h4 className="mt-3 text-2xl font-black">{item.role}</h4>
+                {isGrouped ? null : <p className="mt-1 font-semibold opacity-80">{item.company}</p>}
+              </div>
+              <div className="flex max-w-xl flex-wrap gap-2 lg:justify-end">
+                {item.tech.map((tech) => (
+                  <span key={tech} className={cx("rounded-full border px-3 py-1 text-xs font-semibold", theme.chip)}>
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <ul className="mt-5 grid gap-3 text-sm leading-7 opacity-85">
+              {localize(item.highlights as LocalizedList, language).map((highlight) => (
+                <li key={highlight} className="flex gap-3">
+                  <span className={cx("mt-3 h-1.5 w-1.5 flex-none rounded-full", theme.timelineDot)} aria-hidden="true" />
+                  <span>{highlight}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </li>
   );
 }
 

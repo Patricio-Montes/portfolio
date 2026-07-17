@@ -113,7 +113,7 @@ test("hero focus chips use the requested professional positioning only", () => {
 test("page profile summary is concise and covers the required positioning", () => {
   const expectedSummaries = {
     en: "Software engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
-    es: "Ingeniero de software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana."
+    es: "Desarrollador de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana."
   };
 
   for (const code of languageCodes) {
@@ -121,6 +121,10 @@ test("page profile summary is concise and covers the required positioning", () =
 
     assert.equal(summary, expectedSummaries[code]);
     assert.ok(summary.length <= 210, `${code} summary must stay short enough for PDF layout`);
+    if (code === "es") {
+      assert.match(summary, /^Desarrollador de Software\b/);
+      assert.doesNotMatch(summary, /^Ingeniero de software\b/);
+    }
     assert.match(summary, /10\+/);
     assert.match(summary, /architecture|arquitectura/i);
     assert.match(summary, /automation|automatización/i);
@@ -140,17 +144,24 @@ test("experience ownership and Codeicus ordering match the corrected CV facts", 
 
   assert.equal(codeicusItems.length, 2);
   assert.equal(codeicusItems[0].role, "Ssr .Net Developer");
+  assert.equal(codeicusItems[0].period.en, "October 2019 — September 2021");
+  assert.equal(codeicusItems[0].period.es, "Octubre 2019 — Septiembre 2021");
   assert.equal(codeicusItems[1].role, "Sr Software Developer");
+  assert.equal(codeicusItems[1].period.en, "December 2020 — September 2021");
+  assert.equal(codeicusItems[1].period.es, "Diciembre 2020 — Septiembre 2021");
   assert.ok(codeicusItems[1].tech.includes("DDD"));
   assert.equal(codeicusItems[1].tech.includes("Whimsical"), false);
   assert.equal(codeicusItems[1].tech.includes("JSF"), false);
   assert.ok(codeicusItems[1].tech.includes("Ionic"));
 
-  const luxsysRoles = portfolioContent.experience
-    .filter((item) => item.company === "Luxsys S.R.L")
-    .map((item) => item.role)
-    .sort();
-  assert.deepEqual(luxsysRoles, ["IT Developer", "Technical Leader"]);
+  const luxsysItems = portfolioContent.experience.filter((item) => item.company === "Luxsys S.R.L");
+  assert.equal(luxsysItems.length, 2);
+  assert.equal(luxsysItems[0].role, "IT Developer");
+  assert.equal(luxsysItems[0].period.en, "October 2016 — December 2018");
+  assert.equal(luxsysItems[0].period.es, "Octubre 2016 — Diciembre 2018");
+  assert.equal(luxsysItems[1].role, "Technical Leader");
+  assert.equal(luxsysItems[1].period.en, "December 2018 — October 2019");
+  assert.equal(luxsysItems[1].period.es, "Diciembre 2018 — Octubre 2019");
   assert.equal(
     portfolioContent.experience.some(
       (item) => ["IT Developer", "Technical Leader"].includes(item.role) && item.company !== "Luxsys S.R.L"
@@ -159,10 +170,34 @@ test("experience ownership and Codeicus ordering match the corrected CV facts", 
     "Technical Leader and IT Developer must be owned by Luxsys S.R.L exactly"
   );
 
-  const ecicRoles = portfolioContent.experience
-    .filter((item) => item.company === "ECIC Systems")
-    .map((item) => item.role);
-  assert.deepEqual(ecicRoles, ["Technical Support"]);
+  const unxItems = portfolioContent.experience.filter((item) => item.company === "UNX Digital / Grupo Prominente");
+  assert.equal(unxItems.length, 2);
+  assert.deepEqual(
+    unxItems.map((item) => item.role),
+    ["Sr Software Developer", "Software Architect"]
+  );
+  assert.equal(unxItems[0].period.en, "September 2021 — April 2022");
+  assert.equal(unxItems[0].period.es, "Septiembre 2021 — Abril 2022");
+  assert.equal(unxItems[1].period.en, "April 2022 — November 2022");
+  assert.equal(unxItems[1].period.es, "Abril 2022 — Noviembre 2022");
+
+  const publicText = JSON.stringify(portfolioContent);
+  for (const forbidden of [
+    /ECIC Systems/,
+    /Technical Support/,
+    /Web Designer/,
+    /Luxsys S\.R\.L \/ Freelance/,
+    /March 2020 — December 2020/,
+    /Marzo 2020 — Diciembre 2020/,
+    /Sr Software Architect/
+  ]) {
+    assert.doesNotMatch(publicText, forbidden, `forbidden experience content found: ${forbidden}`);
+  }
+  assert.equal(
+    unxItems.some((item) => item.role === "Ssr .Net Developer"),
+    false,
+    "UNX must not own Ssr .Net Developer"
+  );
 });
 
 test("education avoids unverified graduation or fluency claims", () => {

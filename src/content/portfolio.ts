@@ -82,7 +82,7 @@ export const portfolioContent = {
         {
           value: "10+",
           label: "years across software delivery",
-          detail: "From technical support and BPM integrations to senior development and architecture decisions."
+          detail: "From BPM integrations to senior development and architecture decisions."
         },
         {
           value: "3",
@@ -160,7 +160,7 @@ export const portfolioContent = {
       hero: {
         eyebrow: "Desarrollador de Software",
         title: "Backend, cloud y entrega de producto con criterio práctico de ingeniería.",
-        subtitle: "Ingeniero de software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana.",
+        subtitle: "Desarrollador de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana.",
         primaryCta: "Contactarme",
         secondaryCta: "Ver experiencia",
         availability: "Disponible para desarrollo de software, soporte de arquitectura e integraciones.",
@@ -170,7 +170,7 @@ export const portfolioContent = {
         {
           value: "10+",
           label: "años en entrega de software",
-          detail: "Desde soporte técnico e integraciones BPM hasta desarrollo senior y decisiones de arquitectura."
+          detail: "Desde integraciones BPM hasta desarrollo senior y decisiones de arquitectura."
         },
         {
           value: "3",
@@ -268,19 +268,6 @@ export const portfolioContent = {
     },
     {
       company: "UNX Digital / Grupo Prominente",
-      role: "Software Architect",
-      period: {
-        en: "April 2022 — November 2022",
-        es: "Abril 2022 — Noviembre 2022"
-      },
-      highlights: {
-        en: ["Defined architecture decisions for communication between applications.", "Implemented a .NET Core API Gateway with Ocelot on Google App Engine.", "Integrated OIDC tokens from GCP to solve authentication; the architecture was validated by Google Argentina DevOps, and he trained other teams."],
-        es: ["Definió arquitectura para comunicación entre aplicaciones e implementó un API Gateway .NET Core con Ocelot en Google App Engine.", "Integró tokens OIDC desde GCP para resolver autenticación; la arquitectura fue validada por Google Argentina DevOps y capacitó a otros equipos."]
-      },
-      tech: ["Google Cloud Platform", "Google App Engine", ".NET Core", "Ocelot", "OIDC"]
-    },
-    {
-      company: "UNX Digital / Grupo Prominente",
       role: "Sr Software Developer",
       period: {
         en: "September 2021 — April 2022",
@@ -294,29 +281,29 @@ export const portfolioContent = {
     },
     {
       company: "UNX Digital / Grupo Prominente",
+      role: "Software Architect",
+      period: {
+        en: "April 2022 — November 2022",
+        es: "Abril 2022 — Noviembre 2022"
+      },
+      highlights: {
+        en: ["Defined architecture decisions for communication between applications.", "Implemented a .NET Core API Gateway with Ocelot on Google App Engine.", "Integrated OIDC tokens from GCP to solve authentication; the architecture was validated by Google Argentina DevOps, and he trained other teams."],
+        es: ["Definió arquitectura para comunicación entre aplicaciones e implementó un API Gateway .NET Core con Ocelot en Google App Engine.", "Integró tokens OIDC desde GCP para resolver autenticación; la arquitectura fue validada por Google Argentina DevOps y capacitó a otros equipos."]
+      },
+      tech: ["Google Cloud Platform", "Google App Engine", ".NET Core", "Ocelot", "OIDC"]
+    },
+    {
+      company: "Codeicus",
       role: "Ssr .Net Developer",
       period: {
         en: "October 2019 — September 2021",
         es: "Octubre 2019 — Septiembre 2021"
       },
       highlights: {
-        en: ["Worked across Java DDD APIs, ERP components, a Python backup assistant, C#/Java financial applications, insurance broker components, and backend integrations with Jira, Jenkins, GitLab, and SonarQube."],
-        es: ["Trabajó en APIs Java con DDD, componentes ERP, un asistente de backup en Python, aplicaciones financieras C#/Java, componentes para productores de seguros e integraciones con Jira, Jenkins, GitLab y SonarQube."]
+        en: ["Developed .NET and Java features for internal project-management and emergency-response products, including integrations with Jira, Jenkins, and GitLab APIs.", "Worked across Java DDD APIs, ERP components, a Python backup assistant, C#/Java financial applications, insurance broker components, and backend integrations with Jira, Jenkins, GitLab, and SonarQube."],
+        es: ["Desarrolló funcionalidades .NET y Java para productos internos de gestión de proyectos y respuesta de emergencia, con integraciones a APIs de Jira, Jenkins y GitLab.", "Trabajó en APIs Java con DDD, componentes ERP, un asistente de backup en Python, aplicaciones financieras C#/Java, componentes para productores de seguros e integraciones con Jira, Jenkins, GitLab y SonarQube."]
       },
-      tech: ["Java", "Gradle", "Angular", "JUnit", "Python", "C#", "HTML", "CSS", "JavaScript"]
-    },
-    {
-      company: "Codeicus",
-      role: "Ssr .Net Developer",
-      period: {
-        en: "March 2020 — December 2020",
-        es: "Marzo 2020 — Diciembre 2020"
-      },
-      highlights: {
-        en: ["Developed .NET and Java features for internal project-management and emergency-response products, including integrations with Jira, Jenkins, and GitLab APIs."],
-        es: ["Desarrolló funcionalidades .NET y Java para productos internos de gestión de proyectos y respuesta de emergencia, con integraciones a APIs de Jira, Jenkins y GitLab."]
-      },
-      tech: [".NET", "Java", "Angular", "JUnit", "Jira", "Jenkins", "GitLab"]
+      tech: [".NET", "Java", "Angular", "JUnit", "Jira", "Jenkins", "GitLab", "DDD"]
     },
     {
       company: "Codeicus",
@@ -333,19 +320,6 @@ export const portfolioContent = {
     },
     {
       company: "Luxsys S.R.L",
-      role: "Technical Leader",
-      period: {
-        en: "December 2018 — October 2019",
-        es: "Diciembre 2018 — Octubre 2019"
-      },
-      highlights: {
-        en: ["Designed BPM solutions with the development team and estimated incidents with technical resolution details, delegation, and project follow-up."],
-        es: ["Diseñó soluciones BPM con el equipo y estimó incidentes con detalles técnicos de resolución, delegación y seguimiento de proyectos."]
-      },
-      tech: ["BPM", "Technical leadership", "Estimation", "Project follow-up"]
-    },
-    {
-      company: "Luxsys S.R.L",
       role: "IT Developer",
       period: {
         en: "October 2016 — December 2018",
@@ -358,30 +332,17 @@ export const portfolioContent = {
       tech: ["BPM", "REST APIs", "SQL", "Softland", "Bejerman"]
     },
     {
-      company: "ECIC Systems",
-      role: "Technical Support",
+      company: "Luxsys S.R.L",
+      role: "Technical Leader",
       period: {
-        en: "August 2015 — August 2016",
-        es: "Agosto 2015 — Agosto 2016"
+        en: "December 2018 — October 2019",
+        es: "Diciembre 2018 — Octubre 2019"
       },
       highlights: {
-        en: ["Provided hardware and software support for S.O.S network operators in Rosario."],
-        es: ["Brindó soporte de hardware y software para operadores de red S.O.S en Rosario."]
+        en: ["Designed BPM solutions with the development team and estimated incidents with technical resolution details, delegation, and project follow-up."],
+        es: ["Diseñó soluciones BPM con el equipo y estimó incidentes con detalles técnicos de resolución, delegación y seguimiento de proyectos."]
       },
-      tech: ["Hardware support", "Software support", "Operations"]
-    },
-    {
-      company: "Luxsys S.R.L / Freelance",
-      role: "Web Designer",
-      period: {
-        en: "August 2014 — August 2015",
-        es: "Agosto 2014 — Agosto 2015"
-      },
-      highlights: {
-        en: ["Built and hosted business websites with WordPress and Hostinger."],
-        es: ["Construyó y alojó sitios web comerciales con WordPress y Hostinger."]
-      },
-      tech: ["WordPress", "Hostinger", "Web design"]
+      tech: ["BPM", "Technical leadership", "Estimation", "Project follow-up"]
     }
   ],
   skills: [
