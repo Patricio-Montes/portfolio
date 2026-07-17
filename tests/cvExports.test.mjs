@@ -133,6 +133,10 @@ test("generated PDF summaries mirror the concise page summary", async () => {
       const pdfText = extractPdfText(pdf);
 
       assert.match(pdfText, new RegExp(expectedSummary.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+      if (language === "en") {
+        assert.match(pdfText, /Software Developer with 10\+/);
+        assert.doesNotMatch(pdfText, /Software engineer with 10\+/i);
+      }
       if (language === "es") {
         assert.match(pdfText, /Desarrollador de Software con 10\+/);
         assert.doesNotMatch(pdfText, /Ingeniero de software con 10\+/);
@@ -156,9 +160,14 @@ test("generated PDF CVs mirror corrected page data", async () => {
   assert.equal(frameworks?.items.includes(genericMaterialFramework), false);
   assert.ok(sideas?.tech.includes("Angular Material"), "Sideas tech must keep Angular Material");
   assert.doesNotMatch(pageText, /\bPortuguese\b|\bPortugués\b|\bPortuguês\b|\bPT\b|\bpt\b/);
-  assert.doesNotMatch(pageText, /Whimsical|JSF/);
-  assert.match(pageText, /Ionic/);
+  assert.match(pageText, /Whimsical/);
+  assert.match(pageText, /JSF/);
+  assert.doesNotMatch(pageText, /Ionic/);
   assert.match(pageText, /DDD/);
+  assert.match(pageText, /Gradle/);
+  assert.match(pageText, /SonarQube/);
+  assert.match(pageText, /supermarket shelf survey app/i);
+  assert.match(pageText, /WCF communication module/i);
   assert.match(pageText, /Codeicus/);
   assert.match(pageText, /Luxsys S\.R\.L/);
   assert.doesNotMatch(pageText, /ECIC Systems|Technical Support|Web Designer|Luxsys S\.R\.L \/ Freelance/);
@@ -197,7 +206,8 @@ test("generated PDF CVs mirror corrected page data", async () => {
       const pdfText = extractPdfText(pdf);
 
       assert.doesNotMatch(pdfText, /\bPortuguese\b|\bPortugués\b|\bPortuguês\b|\bPT\b|\bpt\b/);
-      assert.doesNotMatch(pdfText, /Whimsical|JSF/);
+      assert.match(pdfText, /Whimsical/);
+      assert.match(pdfText, /JSF/);
       assert.doesNotMatch(pdfText, new RegExp(genericMaterialFramework));
       assert.match(pdfText, /Frameworks: [^\n]*Angular Material/);
       assert.match(pdfText, /Sideas[\s\S]*Angular Material/);
@@ -228,8 +238,12 @@ test("generated PDF CVs mirror corrected page data", async () => {
       assert.match(pdfText, /Sr Software Developer/);
       assert.match(pdfText, /Technical Leader/);
       assert.match(pdfText, /IT Developer/);
-      assert.match(pdfText, /Ionic/);
+      assert.doesNotMatch(pdfText, /Ionic/);
       assert.match(pdfText, /DDD/);
+      assert.match(pdfText, /Gradle/);
+      assert.match(pdfText, /SonarQube/);
+      assert.match(pdfText, /supermarket shelf survey app|app de relevamiento de góndolas/i);
+      assert.match(pdfText, /WCF communication module|módulo de comunicación WCF/i);
     }
   }
 });

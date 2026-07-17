@@ -67,21 +67,6 @@ const themeStyles: Record<ThemeKey, ThemeStyle> = {
     ring: "focus-visible:outline-zinc-100",
     timelineDot: "bg-zinc-100"
   },
-  notebook: {
-    shell: "bg-stone-100 text-stone-950",
-    header: "border-stone-300/80 bg-stone-100/90",
-    heroGradient: "from-amber-200/55 via-stone-200/50 to-transparent",
-    card: "border-stone-300 bg-stone-50 shadow-xl shadow-stone-300/40",
-    cardMuted: "border-stone-300 bg-white/70",
-    chip: "border-stone-400/70 bg-white/80 text-stone-800",
-    accent: "text-stone-700",
-    primaryButton: "bg-stone-900 text-stone-50 hover:bg-stone-800",
-    secondaryButton: "border-stone-400 bg-white/80 text-stone-900 hover:bg-stone-200",
-    selectorActive: "border-stone-900 bg-stone-900 text-stone-50",
-    selectorInactive: "border-stone-400 bg-white/80 text-stone-900 hover:bg-stone-200",
-    ring: "focus-visible:outline-stone-800",
-    timelineDot: "bg-stone-700"
-  },
   editorial: {
     shell: "bg-[#f6f1e8] text-[#211b16]",
     header: "border-[#d7c7ad] bg-[#f6f1e8]/90",
@@ -158,8 +143,8 @@ function SectionHeading({
 }
 
 export default function PortfolioShell({ content }: PortfolioShellProps) {
-  const [language, setLanguage] = useState<LanguageCode>("en");
-  const [theme, setTheme] = useState<ThemeKey>("midnight");
+  const [language, setLanguage] = useState<LanguageCode>("es");
+  const [theme, setTheme] = useState<ThemeKey>("editorial");
 
   const copy = content.locales[language];
   const themeStyle = themeStyles[theme];

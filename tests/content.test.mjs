@@ -7,9 +7,10 @@ import { cvPdfExportLanguages } from "../src/utils/cvExports.ts";
 test("portfolio exposes the required language and theme options", () => {
   assert.deepEqual([...languageCodes], ["en", "es"]);
   assert.deepEqual([...cvPdfExportLanguages], [...languageCodes]);
-  assert.deepEqual([...themeKeys], ["midnight", "graphite", "notebook", "editorial"]);
+  assert.deepEqual([...themeKeys], ["midnight", "graphite", "editorial"]);
   assert.equal(themeKeys.includes("forest"), false);
   assert.equal(themeKeys.includes("sunrise"), false);
+  assert.equal(themeKeys.includes("notebook"), false);
 
   for (const code of languageCodes) {
     assert.ok(portfolioContent.locales[code], `missing locale ${code}`);
@@ -20,15 +21,22 @@ test("portfolio exposes the required language and theme options", () => {
   }
 
   const publicText = JSON.stringify(portfolioContent);
-  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i, /\bPortuguese\b/i, /\bPortugués\b/i, /\bPortuguês\b/i, /\bPT\b/, /\bpt\b/, /\bsunrise\b/i, /\bAmanecer\b/i]) {
+  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i, /\bPortuguese\b/i, /\bPortugués\b/i, /\bPortuguês\b/i, /\bPT\b/, /\bpt\b/, /\bsunrise\b/i, /\bAmanecer\b/i, /\bnotebook\b/i, /\bCuaderno\b/i]) {
     assert.equal(forbidden.test(publicText), false, `forbidden public copy found: ${forbidden}`);
   }
   assert.ok(portfolioContent.themes.some((theme) => theme.key === "graphite"));
-  assert.ok(portfolioContent.themes.some((theme) => theme.key === "notebook" && theme.label.en === "Notebook" && theme.label.es === "Cuaderno"));
   assert.ok(portfolioContent.themes.some((theme) => theme.key === "editorial" && theme.label.en === "Editorial" && theme.label.es === "Editorial"));
   assert.ok(portfolioContent.themes.some((theme) => theme.label.es === "Grafito"));
-  assert.equal(portfolioContent.themes.length, 4);
+  assert.equal(portfolioContent.themes.length, 3);
   assert.equal(portfolioContent.languages.length, 2);
+});
+
+test("portfolio shell defaults to Spanish language and editorial theme", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+
+  assert.match(shell, /useState<LanguageCode>\("es"\)/);
+  assert.match(shell, /useState<ThemeKey>\("editorial"\)/);
+  assert.doesNotMatch(shell, /\bnotebook\b/);
 });
 
 test("verified identity and contact facts are present without private CV data", () => {
@@ -115,7 +123,7 @@ test("hero focus chips use the requested professional positioning only", () => {
 
 test("page profile summary is concise and covers the required positioning", () => {
   const expectedSummaries = {
-    en: "Software engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
+    en: "Software Developer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
     es: "Desarrollador de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana."
   };
 
@@ -124,6 +132,10 @@ test("page profile summary is concise and covers the required positioning", () =
 
     assert.equal(summary, expectedSummaries[code]);
     assert.ok(summary.length <= 210, `${code} summary must stay short enough for PDF layout`);
+    if (code === "en") {
+      assert.match(summary, /^Software Developer\b/);
+      assert.doesNotMatch(summary, /^Software engineer\b/i);
+    }
     if (code === "es") {
       assert.match(summary, /^Desarrollador de Software\b/);
       assert.doesNotMatch(summary, /^Ingeniero de software\b/);
@@ -149,13 +161,28 @@ test("experience ownership and same-company data preserve verified CV facts", ()
   assert.equal(codeicusItems[0].role, "Ssr .Net Developer");
   assert.equal(codeicusItems[0].period.en, "October 2019 — September 2021");
   assert.equal(codeicusItems[0].period.es, "Octubre 2019 — Septiembre 2021");
+  assert.ok(codeicusItems[0].tech.includes("Gradle"));
+  assert.ok(codeicusItems[0].tech.includes("Python"));
+  assert.ok(codeicusItems[0].tech.includes("SonarQube"));
+  assert.match(codeicusItems[0].highlights.en.join(" "), /Java DDD APIs/i);
+  assert.match(codeicusItems[0].highlights.en.join(" "), /ERP full-stack components/i);
+  assert.match(codeicusItems[0].highlights.en.join(" "), /Python backup assistant/i);
+  assert.match(codeicusItems[0].highlights.en.join(" "), /financial app/i);
+  assert.match(codeicusItems[0].highlights.en.join(" "), /insurance broker/i);
+  assert.match(codeicusItems[0].highlights.en.join(" "), /Jira, Jenkins, GitLab, and SonarQube/i);
   assert.equal(codeicusItems[1].role, "Sr Software Developer");
   assert.equal(codeicusItems[1].period.en, "December 2020 — September 2021");
   assert.equal(codeicusItems[1].period.es, "Diciembre 2020 — Septiembre 2021");
-  assert.ok(codeicusItems[1].tech.includes("DDD"));
-  assert.equal(codeicusItems[1].tech.includes("Whimsical"), false);
-  assert.equal(codeicusItems[1].tech.includes("JSF"), false);
-  assert.ok(codeicusItems[1].tech.includes("Ionic"));
+  assert.ok(codeicusItems[1].tech.includes("Maven"));
+  assert.ok(codeicusItems[1].tech.includes("JSF"));
+  assert.ok(codeicusItems[1].tech.includes("Whimsical"));
+  assert.ok(codeicusItems[1].tech.includes("React Native"));
+  assert.ok(codeicusItems[1].tech.includes("C#"));
+  assert.equal(codeicusItems[1].tech.includes("Ionic"), false);
+  assert.match(codeicusItems[1].highlights.en.join(" "), /credit management web tools/i);
+  assert.match(codeicusItems[1].highlights.en.join(" "), /construction ERP/i);
+  assert.match(codeicusItems[1].highlights.en.join(" "), /supermarket shelf survey app/i);
+  assert.match(codeicusItems[1].highlights.en.join(" "), /WCF communication module/i);
 
   const luxsysItems = portfolioContent.experience.filter((item) => item.company === "Luxsys S.R.L");
   assert.equal(luxsysItems.length, 2);

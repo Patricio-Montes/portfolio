@@ -1,5 +1,5 @@
 export const languageCodes = ["en", "es"] as const;
-export const themeKeys = ["midnight", "graphite", "notebook", "editorial"] as const;
+export const themeKeys = ["midnight", "graphite", "editorial"] as const;
 
 export type LanguageCode = (typeof languageCodes)[number];
 export type ThemeKey = (typeof themeKeys)[number];
@@ -48,13 +48,6 @@ export const portfolioContent = {
       }
     },
     {
-      key: "notebook",
-      label: {
-        en: "Notebook",
-        es: "Cuaderno"
-      }
-    },
-    {
       key: "editorial",
       label: {
         en: "Editorial",
@@ -86,7 +79,7 @@ export const portfolioContent = {
       hero: {
         eyebrow: "Software Developer",
         title: "Backend, cloud, and product delivery with a practical engineering mindset.",
-        subtitle: "Software engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
+        subtitle: "Software Developer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
         primaryCta: "Contact me",
         secondaryCta: "View experience",
         availability: "Available for software development, architecture support, and integration work.",
@@ -320,10 +313,10 @@ export const portfolioContent = {
         es: "Octubre 2019 — Septiembre 2021"
       },
       highlights: {
-        en: ["Developed .NET and Java features for internal project-management and emergency-response products, including integrations with Jira, Jenkins, and GitLab APIs.", "Worked across Java DDD APIs, ERP components, a Python backup assistant, C#/Java financial applications, insurance broker components, and backend integrations with Jira, Jenkins, GitLab, and SonarQube."],
-        es: ["Desarrolló funcionalidades .NET y Java para productos internos de gestión de proyectos y respuesta de emergencia, con integraciones a APIs de Jira, Jenkins y GitLab.", "Trabajó en APIs Java con DDD, componentes ERP, un asistente de backup en Python, aplicaciones financieras C#/Java, componentes para productores de seguros e integraciones con Jira, Jenkins, GitLab y SonarQube."]
+        en: ["Built Java DDD APIs with Gradle, ERP full-stack components with Angular, Java, and JUnit, plus a Python backup assistant.", "Maintained and evolved C#/Java financial app features, insurance broker components with C#/Java/HTML/CSS/JavaScript, and Java + Gradle backend integrations with Jira, Jenkins, GitLab, and SonarQube."],
+        es: ["Construyó APIs Java con DDD y Gradle, componentes ERP full-stack con Angular, Java y JUnit, más un asistente de backup en Python.", "Mantuvo y evolucionó funcionalidades de aplicaciones financieras C#/Java, componentes para productores de seguros con C#/Java/HTML/CSS/JavaScript e integraciones backend Java + Gradle con Jira, Jenkins, GitLab y SonarQube."]
       },
-      tech: [".NET", "Java", "Angular", "JUnit", "Jira", "Jenkins", "GitLab", "DDD"]
+      tech: ["Java", "Gradle", "Angular", "JUnit", "Python", "C#", "JavaScript", "Jira", "Jenkins", "GitLab", "SonarQube", "DDD"]
     },
     {
       company: "Codeicus",
@@ -333,10 +326,10 @@ export const portfolioContent = {
         es: "Diciembre 2020 — Septiembre 2021"
       },
       highlights: {
-        en: ["Built internal credit-area management tools, defined DDD-oriented ERP domains, maintained React Native and Ionic mobile releases, and reviewed a .NET WCF communication module."],
-        es: ["Construyó herramientas internas para el área crediticia, definió dominios ERP orientados a DDD, mantuvo releases móviles React Native e Ionic y revisó un módulo .NET WCF."]
+        en: ["Built internal credit management web tools with Java, Maven, and JSF, and collaborated on construction ERP domains using Draw.io and Whimsical.", "Maintained Android/iOS supermarket shelf survey app releases in React Native with minor fixes, and reviewed a C# .NET WCF communication module."],
+        es: ["Construyó herramientas web internas de gestión crediticia con Java, Maven y JSF, y colaboró en dominios de ERP para construcción usando Draw.io y Whimsical.", "Mantuvo releases Android/iOS de una app de relevamiento de góndolas de supermercado en React Native con ajustes menores, y revisó un módulo de comunicación WCF en C# .NET."]
       },
-      tech: ["Java", "Maven", "DDD", "Draw.io", "React Native", "Ionic", "C#"]
+      tech: ["Java", "Maven", "JSF", "Draw.io", "Whimsical", "React Native", "C#"]
     },
     {
       company: "Luxsys S.R.L",
