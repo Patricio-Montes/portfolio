@@ -52,20 +52,20 @@ const themeStyles: Record<ThemeKey, ThemeStyle> = {
     ring: "focus-visible:outline-sky-200",
     timelineDot: "bg-sky-300"
   },
-  graphite: {
-    shell: "bg-neutral-950 text-neutral-100",
-    header: "border-zinc-100/10 bg-neutral-950/80",
-    heroGradient: "from-zinc-300/20 via-slate-400/10 to-transparent",
-    card: "border-zinc-100/10 bg-zinc-100/10 shadow-2xl shadow-black/30",
-    cardMuted: "border-zinc-100/10 bg-zinc-100/[0.07]",
-    chip: "border-zinc-200/30 bg-zinc-200/10 text-zinc-100",
-    accent: "text-zinc-100",
-    primaryButton: "bg-zinc-100 text-neutral-950 hover:bg-white",
-    secondaryButton: "border-zinc-100/20 bg-zinc-100/10 text-zinc-50 hover:bg-zinc-100/15",
-    selectorActive: "border-zinc-100 bg-zinc-100 text-neutral-950",
-    selectorInactive: "border-zinc-100/15 bg-zinc-100/5 text-zinc-50 hover:bg-zinc-100/10",
-    ring: "focus-visible:outline-zinc-100",
-    timelineDot: "bg-zinc-100"
+  notebook: {
+    shell: "bg-[#f8f5ed] text-[#27231e]",
+    header: "border-[#d8ccb7] bg-[#f8f5ed]/90",
+    heroGradient: "from-[#d9c7a6]/35 via-[#efe5d1]/50 to-transparent",
+    card: "border-[#d8ccb7] bg-[#fffdf7] shadow-xl shadow-[#d8ccb7]/35",
+    cardMuted: "border-[#d8ccb7] bg-[#fffdf7]/75",
+    chip: "border-[#a89574]/50 bg-[#f0e3ca] text-[#3f3528]",
+    accent: "text-[#6f5a39]",
+    primaryButton: "bg-[#302820] text-[#fffdf7] hover:bg-[#4a3d30]",
+    secondaryButton: "border-[#a89574]/60 bg-[#fffdf7] text-[#302820] hover:bg-[#f0e3ca]",
+    selectorActive: "border-[#302820] bg-[#302820] text-[#fffdf7]",
+    selectorInactive: "border-[#a89574]/60 bg-[#fffdf7] text-[#302820] hover:bg-[#f0e3ca]",
+    ring: "focus-visible:outline-[#6f5a39]",
+    timelineDot: "bg-[#6f5a39]"
   },
   editorial: {
     shell: "bg-[#f6f1e8] text-[#211b16]",
@@ -144,7 +144,7 @@ function SectionHeading({
 
 export default function PortfolioShell({ content }: PortfolioShellProps) {
   const [language, setLanguage] = useState<LanguageCode>("es");
-  const [theme, setTheme] = useState<ThemeKey>("editorial");
+  const [theme, setTheme] = useState<ThemeKey>("notebook");
 
   const copy = content.locales[language];
   const themeStyle = themeStyles[theme];

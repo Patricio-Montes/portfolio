@@ -1,5 +1,5 @@
 export const languageCodes = ["en", "es"] as const;
-export const themeKeys = ["midnight", "graphite", "editorial"] as const;
+export const themeKeys = ["midnight", "notebook", "editorial"] as const;
 
 export type LanguageCode = (typeof languageCodes)[number];
 export type ThemeKey = (typeof themeKeys)[number];
@@ -41,10 +41,10 @@ export const portfolioContent = {
       }
     },
     {
-      key: "graphite",
+      key: "notebook",
       label: {
-        en: "Graphite",
-        es: "Grafito"
+        en: "Notebook",
+        es: "Cuaderno"
       }
     },
     {

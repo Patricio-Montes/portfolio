@@ -7,10 +7,10 @@ import { cvPdfExportLanguages } from "../src/utils/cvExports.ts";
 test("portfolio exposes the required language and theme options", () => {
   assert.deepEqual([...languageCodes], ["en", "es"]);
   assert.deepEqual([...cvPdfExportLanguages], [...languageCodes]);
-  assert.deepEqual([...themeKeys], ["midnight", "graphite", "editorial"]);
+  assert.deepEqual([...themeKeys], ["midnight", "notebook", "editorial"]);
   assert.equal(themeKeys.includes("forest"), false);
   assert.equal(themeKeys.includes("sunrise"), false);
-  assert.equal(themeKeys.includes("notebook"), false);
+  assert.equal(themeKeys.includes("graphite"), false);
 
   for (const code of languageCodes) {
     assert.ok(portfolioContent.locales[code], `missing locale ${code}`);
@@ -21,22 +21,22 @@ test("portfolio exposes the required language and theme options", () => {
   }
 
   const publicText = JSON.stringify(portfolioContent);
-  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i, /\bPortuguese\b/i, /\bPortugués\b/i, /\bPortuguês\b/i, /\bPT\b/, /\bpt\b/, /\bsunrise\b/i, /\bAmanecer\b/i, /\bnotebook\b/i, /\bCuaderno\b/i]) {
+  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i, /\bPortuguese\b/i, /\bPortugués\b/i, /\bPortuguês\b/i, /\bPT\b/, /\bpt\b/, /\bsunrise\b/i, /\bAmanecer\b/i, /\bgraphite\b/i, /\bGrafito\b/i]) {
     assert.equal(forbidden.test(publicText), false, `forbidden public copy found: ${forbidden}`);
   }
-  assert.ok(portfolioContent.themes.some((theme) => theme.key === "graphite"));
+  assert.ok(portfolioContent.themes.some((theme) => theme.key === "notebook"));
   assert.ok(portfolioContent.themes.some((theme) => theme.key === "editorial" && theme.label.en === "Editorial" && theme.label.es === "Editorial"));
-  assert.ok(portfolioContent.themes.some((theme) => theme.label.es === "Grafito"));
+  assert.ok(portfolioContent.themes.some((theme) => theme.label.en === "Notebook" && theme.label.es === "Cuaderno"));
   assert.equal(portfolioContent.themes.length, 3);
   assert.equal(portfolioContent.languages.length, 2);
 });
 
-test("portfolio shell defaults to Spanish language and editorial theme", async () => {
+test("portfolio shell defaults to Spanish language and notebook theme", async () => {
   const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
 
   assert.match(shell, /useState<LanguageCode>\("es"\)/);
-  assert.match(shell, /useState<ThemeKey>\("editorial"\)/);
-  assert.doesNotMatch(shell, /\bnotebook\b/);
+  assert.match(shell, /useState<ThemeKey>\("notebook"\)/);
+  assert.doesNotMatch(shell, /\bgraphite\b/);
 });
 
 test("verified identity and contact facts are present without private CV data", () => {
