@@ -7,6 +7,12 @@ import type {
   PortfolioContent,
   ThemeKey
 } from "@/content/portfolio";
+import {
+  buildCvSpreadsheetXml,
+  cvExportFileNames,
+  type CvExportVariant
+} from "@/utils/cvExports";
+import { printCurrentPage } from "@/utils/exportActions";
 
 type PortfolioShellProps = {
   content: PortfolioContent;
@@ -44,20 +50,20 @@ const themeStyles: Record<ThemeKey, ThemeStyle> = {
     ring: "focus-visible:outline-sky-200",
     timelineDot: "bg-sky-300"
   },
-  forest: {
-    shell: "bg-emerald-950 text-emerald-50",
-    header: "border-emerald-200/10 bg-emerald-950/80",
-    heroGradient: "from-emerald-400/20 via-lime-300/10 to-transparent",
-    card: "border-emerald-200/10 bg-emerald-100/10 shadow-2xl shadow-emerald-950/30",
-    cardMuted: "border-emerald-200/10 bg-emerald-100/[0.07]",
-    chip: "border-lime-200/30 bg-lime-300/10 text-lime-100",
-    accent: "text-lime-100",
-    primaryButton: "bg-lime-200 text-emerald-950 hover:bg-lime-100",
-    secondaryButton: "border-emerald-100/20 bg-emerald-100/10 text-emerald-50 hover:bg-emerald-100/15",
-    selectorActive: "border-lime-200 bg-lime-200 text-emerald-950",
-    selectorInactive: "border-emerald-100/15 bg-emerald-100/5 text-emerald-50 hover:bg-emerald-100/10",
-    ring: "focus-visible:outline-lime-100",
-    timelineDot: "bg-lime-200"
+  graphite: {
+    shell: "bg-neutral-950 text-neutral-100",
+    header: "border-zinc-100/10 bg-neutral-950/80",
+    heroGradient: "from-zinc-300/20 via-slate-400/10 to-transparent",
+    card: "border-zinc-100/10 bg-zinc-100/10 shadow-2xl shadow-black/30",
+    cardMuted: "border-zinc-100/10 bg-zinc-100/[0.07]",
+    chip: "border-zinc-200/30 bg-zinc-200/10 text-zinc-100",
+    accent: "text-zinc-100",
+    primaryButton: "bg-zinc-100 text-neutral-950 hover:bg-white",
+    secondaryButton: "border-zinc-100/20 bg-zinc-100/10 text-zinc-50 hover:bg-zinc-100/15",
+    selectorActive: "border-zinc-100 bg-zinc-100 text-neutral-950",
+    selectorInactive: "border-zinc-100/15 bg-zinc-100/5 text-zinc-50 hover:bg-zinc-100/10",
+    ring: "focus-visible:outline-zinc-100",
+    timelineDot: "bg-zinc-100"
   },
   sunrise: {
     shell: "bg-stone-950 text-amber-50",
@@ -82,6 +88,25 @@ function cx(...values: Array<string | false | null | undefined>) {
 
 function localize<T>(value: Readonly<Record<LanguageCode, T>>, language: LanguageCode): T {
   return value[language];
+}
+
+function downloadCvSpreadsheet(
+  content: PortfolioContent,
+  language: LanguageCode,
+  variant: CvExportVariant
+) {
+  const xml = buildCvSpreadsheetXml(content, language, variant);
+  const blob = new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+
+  anchor.href = url;
+  anchor.download = cvExportFileNames[variant];
+  anchor.rel = "noreferrer";
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
 }
 
 function SectionHeading({
@@ -254,7 +279,7 @@ function Hero({
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href={`mailto:${content.profile.email}`}
+              href="#contact"
               className={cx(
                 "rounded-full px-5 py-3 text-sm font-bold outline-none transition",
                 theme.primaryButton,
@@ -274,6 +299,8 @@ function Hero({
               {copy.hero.secondaryCta}
             </a>
           </div>
+
+          <ExportActions content={content} language={language} copy={copy.exports} theme={theme} />
 
           <p className="mt-6 text-sm leading-6 opacity-70">{copy.hero.availability}</p>
         </div>
@@ -304,6 +331,49 @@ function Hero({
         </aside>
       </div>
     </section>
+  );
+}
+
+function ExportActions({
+  content,
+  language,
+  copy,
+  theme
+}: {
+  content: PortfolioContent;
+  language: LanguageCode;
+  copy: PortfolioContent["locales"][LanguageCode]["exports"];
+  theme: ThemeStyle;
+}) {
+  return (
+    <div className="no-print mt-8 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-4">
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={() => printCurrentPage()}
+          className={cx("rounded-full px-4 py-2 text-sm font-bold outline-none transition", theme.primaryButton, theme.ring)}
+        >
+          {copy.printLabel}
+        </button>
+        <button
+          type="button"
+          onClick={() => downloadCvSpreadsheet(content, language, "standard")}
+          className={cx("rounded-full border px-4 py-2 text-sm font-bold outline-none transition", theme.secondaryButton, theme.ring)}
+        >
+          {copy.excelStandardLabel}
+        </button>
+        <button
+          type="button"
+          onClick={() => downloadCvSpreadsheet(content, language, "ats")}
+          className={cx("rounded-full border px-4 py-2 text-sm font-bold outline-none transition", theme.secondaryButton, theme.ring)}
+        >
+          {copy.excelAtsLabel}
+        </button>
+      </div>
+      <p className="mt-3 text-sm leading-6 opacity-75">
+        {copy.printHint} {copy.excelHint}
+      </p>
+    </div>
   );
 }
 
@@ -495,27 +565,53 @@ function Contact({
   copy: PortfolioContent["locales"][LanguageCode]["sections"]["contact"];
   theme: ThemeStyle;
 }) {
+  const contactOptions = [
+    {
+      label: copy.whatsappLabel,
+      description: copy.whatsappDescription,
+      href: content.profile.whatsapp,
+      external: true,
+      style: theme.primaryButton
+    },
+    {
+      label: copy.emailLabel,
+      description: copy.emailDescription,
+      href: `mailto:${content.profile.email}`,
+      external: false,
+      style: theme.secondaryButton
+    },
+    {
+      label: copy.linkedinLabel,
+      description: copy.linkedinDescription,
+      href: content.profile.linkedin,
+      external: true,
+      style: theme.secondaryButton
+    }
+  ] as const;
+
   return (
     <footer id="contact" aria-labelledby="contact-title" className="px-5 py-16 sm:px-8 lg:px-10">
       <div className={cx("mx-auto max-w-7xl rounded-[2rem] border p-8 sm:p-10", theme.card)}>
         <SectionHeading id="contact" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
-        <div className="mt-8 flex flex-wrap gap-3">
-          <a
-            href={`mailto:${content.profile.email}`}
-            className={cx("rounded-full px-5 py-3 text-sm font-bold outline-none transition", theme.primaryButton, theme.ring)}
-          >
-            {copy.emailLabel}
-          </a>
-          <a
-            href={content.profile.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            className={cx("rounded-full border px-5 py-3 text-sm font-bold outline-none transition", theme.secondaryButton, theme.ring)}
-          >
-            {copy.linkedinLabel}
-          </a>
+        <div className="mt-8 grid gap-3 md:grid-cols-3">
+          {contactOptions.map((option) => (
+            <a
+              key={option.label}
+              href={option.href}
+              target={option.external ? "_blank" : undefined}
+              rel={option.external ? "noreferrer" : undefined}
+              className={cx("rounded-[1.25rem] border px-5 py-4 outline-none transition", option.style, theme.ring)}
+            >
+              <span className="block text-sm font-black">{option.label}</span>
+              <span className="mt-1 block text-xs font-medium opacity-75">{option.description}</span>
+            </a>
+          ))}
         </div>
-        <dl className="mt-8 grid gap-4 text-sm sm:grid-cols-2">
+        <dl className="mt-8 grid gap-4 text-sm sm:grid-cols-3">
+          <div>
+            <dt className="font-bold opacity-70">WhatsApp</dt>
+            <dd className="mt-1 break-all">{content.profile.whatsapp}</dd>
+          </div>
           <div>
             <dt className="font-bold opacity-70">{copy.copyEmailLabel}</dt>
             <dd className="mt-1 break-all">{content.profile.email}</dd>

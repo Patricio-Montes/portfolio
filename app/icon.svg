@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>Patricio Montes portfolio icon</title>
+  <defs>
+    <linearGradient id="background" x1="70" x2="442" y1="64" y2="448" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a" />
+      <stop offset="1" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="mark" x1="150" x2="380" y1="120" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#bae6fd" />
+      <stop offset="1" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#background)" />
+  <path
+    fill="url(#mark)"
+    d="M158 386V126h126c31 0 56 8 74 25 19 17 28 40 28 69 0 30-9 54-28 71-18 17-43 26-74 26h-62v69h-64Zm64-122h56c14 0 25-4 33-11 8-8 12-18 12-32s-4-25-12-32c-8-8-19-12-33-12h-56v87Z"
+  />
+  <path
+    fill="#e0f2fe"
+    fill-opacity=".82"
+    d="M146 405h232c14 0 25 11 25 25s-11 25-25 25H146c-14 0-25-11-25-25s11-25 25-25Z"
+  />
+</svg>

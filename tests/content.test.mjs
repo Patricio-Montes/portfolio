@@ -5,7 +5,8 @@ import { languageCodes, portfolioContent, themeKeys } from "../src/content/portf
 
 test("portfolio exposes the required language and theme options", () => {
   assert.deepEqual([...languageCodes], ["en", "es", "pt"]);
-  assert.deepEqual([...themeKeys], ["midnight", "forest", "sunrise"]);
+  assert.deepEqual([...themeKeys], ["midnight", "graphite", "sunrise"]);
+  assert.equal(themeKeys.includes("forest"), false);
 
   for (const code of languageCodes) {
     assert.ok(portfolioContent.locales[code], `missing locale ${code}`);
@@ -14,20 +15,51 @@ test("portfolio exposes the required language and theme options", () => {
       `missing language selector option ${code}`
     );
   }
+
+  const publicText = JSON.stringify(portfolioContent);
+  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i]) {
+    assert.equal(forbidden.test(publicText), false, `legacy forest theme copy found: ${forbidden}`);
+  }
+  assert.ok(portfolioContent.themes.some((theme) => theme.key === "graphite"));
+  assert.ok(portfolioContent.themes.some((theme) => theme.label.es === "Grafito"));
+  assert.ok(portfolioContent.themes.some((theme) => theme.label.pt === "Grafite"));
 });
 
 test("verified identity and contact facts are present without private CV data", () => {
   assert.equal(portfolioContent.profile.name, "Patricio Montes Güemez");
   assert.equal(portfolioContent.profile.title, "Software Developer");
   assert.equal(portfolioContent.profile.email, "montesgpatricio@gmail.com");
+  assert.equal(portfolioContent.profile.whatsapp, "https://wa.me/5491140518040");
   assert.equal(
     portfolioContent.profile.linkedin,
     "https://www.linkedin.com/in/patricio-montes-88212448/"
   );
+  assert.deepEqual(Object.keys(portfolioContent.profile).sort(), [
+    "email",
+    "linkedin",
+    "name",
+    "title",
+    "whatsapp"
+  ]);
 
   const publicText = JSON.stringify(portfolioContent);
-  for (const forbidden of [/\bDNI\b/i, /\bCUIL\b/i, /\bbirth date\b/i, /\bhome address\b/i, /\bphone number\b/i]) {
+  for (const forbidden of [
+    /\bDNI\b/i,
+    /\bCUIL\b/i,
+    /\bbirth date\b/i,
+    /\bhome address\b/i,
+    /\bphone\b/i,
+    /\+54\s+9\s+11/i,
+    /4051\s+8040/
+  ]) {
     assert.equal(forbidden.test(publicText), false, `forbidden public pattern found: ${forbidden}`);
+  }
+
+  for (const code of languageCodes) {
+    const contact = portfolioContent.locales[code].sections.contact;
+    assert.match(contact.whatsappLabel, /WhatsApp/i);
+    assert.match(contact.emailLabel, /mail|email|correo/i);
+    assert.match(contact.linkedinLabel, /LinkedIn/i);
   }
 });
 
@@ -70,7 +102,31 @@ test("education avoids unverified graduation or fluency claims", () => {
   assert.ok(englishTraining.some((item) => item.details.en.includes("no fluency claim")));
 });
 
-test("project dependencies stay clean of PDF extraction packages", async () => {
+test("added skills and verified public projects are present", () => {
+  const databases = portfolioContent.skills.find((group) => group.name.en === "Databases");
+  assert.ok(databases, "missing Databases skill group");
+  assert.ok(databases.items.includes("Supabase"));
+  assert.ok(databases.items.includes("MongoDB"));
+
+  const designAndQa = portfolioContent.skills.find((group) => group.name.en === "Design and QA");
+  assert.ok(designAndQa, "missing Design and QA skill group");
+  for (const tool of ["Excalidraw", "Figma", "Obsidian"]) {
+    assert.ok(designAndQa.items.includes(tool), `missing ${tool}`);
+  }
+
+  const circuit = portfolioContent.projects.find((project) => project.link === "https://circuitoarredepadel.com/");
+  assert.ok(circuit, "missing sports circuit project");
+  assert.equal(circuit.name, "Gestión de circuito deportivo");
+  assert.match(circuit.description.en, /tournaments/i);
+  assert.match(circuit.description.es, /torneos/i);
+
+  const incoders = portfolioContent.projects.find((project) => project.link === "https://www.incoders.com.ar/");
+  assert.ok(incoders, "missing Incoders project");
+  assert.match(incoders.description.en, /admin panel/i);
+  assert.match(incoders.description.en, /financial dashboard/i);
+});
+
+test("project dependencies stay clean of heavy PDF and Excel packages", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
   const dependencyNames = [
     ...Object.keys(packageJson.dependencies ?? {}),
@@ -78,8 +134,8 @@ test("project dependencies stay clean of PDF extraction packages", async () => {
   ];
 
   assert.equal(
-    dependencyNames.some((name) => /pdf|pypdf/i.test(name)),
+    dependencyNames.some((name) => /pdf|pypdf|xlsx|exceljs|spreadsheet/i.test(name)),
     false,
-    "PDF extraction packages must not be added to package.json"
+    "Heavy PDF or Excel packages must not be added to package.json"
   );
 });

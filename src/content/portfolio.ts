@@ -1,5 +1,5 @@
 export const languageCodes = ["en", "es", "pt"] as const;
-export const themeKeys = ["midnight", "forest", "sunrise"] as const;
+export const themeKeys = ["midnight", "graphite", "sunrise"] as const;
 
 export type LanguageCode = (typeof languageCodes)[number];
 export type ThemeKey = (typeof themeKeys)[number];
@@ -11,6 +11,7 @@ export const portfolioContent = {
     name: "Patricio Montes Güemez",
     title: "Software Developer",
     email: "montesgpatricio@gmail.com",
+    whatsapp: "https://wa.me/5491140518040",
     linkedin: "https://www.linkedin.com/in/patricio-montes-88212448/"
   },
   languages: [
@@ -36,8 +37,8 @@ export const portfolioContent = {
       label: { en: "Midnight", es: "Medianoche", pt: "Meia-noite" }
     },
     {
-      key: "forest",
-      label: { en: "Forest", es: "Bosque", pt: "Floresta" }
+      key: "graphite",
+      label: { en: "Graphite", es: "Grafito", pt: "Grafite" }
     },
     {
       key: "sunrise",
@@ -58,6 +59,13 @@ export const portfolioContent = {
       controls: {
         languageLabel: "Choose language",
         themeLabel: "Choose visual theme"
+      },
+      exports: {
+        printLabel: "Print / Save PDF",
+        printHint: "Use the browser print dialog and choose Save as PDF.",
+        excelStandardLabel: "Download CV .xls",
+        excelAtsLabel: "Download ATS .xls",
+        excelHint: "Excel exports are generated in your browser as lightweight .xls XML files."
       },
       hero: {
         eyebrow: "Software Developer",
@@ -129,9 +137,13 @@ export const portfolioContent = {
           eyebrow: "Contact",
           title: "Let’s talk about backend systems, integrations, and delivery workflows.",
           intro:
-            "For professional contact, use email or LinkedIn. Sensitive personal details from the CV are intentionally not published here.",
+            "Choose the channel that fits the conversation: WhatsApp for direct coordination, email for detailed context, or LinkedIn for professional networking.",
+          whatsappLabel: "Message on WhatsApp",
           emailLabel: "Email Patricio",
           linkedinLabel: "Open LinkedIn profile",
+          whatsappDescription: "Best for quick coordination.",
+          emailDescription: "Best for project context and attachments.",
+          linkedinDescription: "Best for professional networking.",
           copyEmailLabel: "Email"
         }
       }
@@ -149,6 +161,13 @@ export const portfolioContent = {
       controls: {
         languageLabel: "Elegir idioma",
         themeLabel: "Elegir tema visual"
+      },
+      exports: {
+        printLabel: "Imprimir / Guardar PDF",
+        printHint: "Usá el diálogo de impresión del navegador y elegí Guardar como PDF.",
+        excelStandardLabel: "Descargar CV .xls",
+        excelAtsLabel: "Descargar ATS .xls",
+        excelHint: "Las exportaciones a Excel se generan en el navegador como archivos .xls XML livianos."
       },
       hero: {
         eyebrow: "Desarrollador de Software",
@@ -220,9 +239,13 @@ export const portfolioContent = {
           eyebrow: "Contacto",
           title: "Hablemos sobre backends, integraciones y flujos de entrega.",
           intro:
-            "Para contacto profesional, usá email o LinkedIn. Los datos personales sensibles del CV no se publican acá de forma intencional.",
+            "Elegí el canal que mejor se ajuste a la conversación: WhatsApp para coordinación directa, email para contexto detallado o LinkedIn para contacto profesional.",
+          whatsappLabel: "Escribir por WhatsApp",
           emailLabel: "Enviar email a Patricio",
           linkedinLabel: "Abrir perfil de LinkedIn",
+          whatsappDescription: "Ideal para coordinación rápida.",
+          emailDescription: "Ideal para contexto de proyecto y adjuntos.",
+          linkedinDescription: "Ideal para networking profesional.",
           copyEmailLabel: "Email"
         }
       }
@@ -240,6 +263,13 @@ export const portfolioContent = {
       controls: {
         languageLabel: "Escolher idioma",
         themeLabel: "Escolher tema visual"
+      },
+      exports: {
+        printLabel: "Imprimir / Salvar PDF",
+        printHint: "Use a janela de impressão do navegador e escolha Salvar como PDF.",
+        excelStandardLabel: "Baixar CV .xls",
+        excelAtsLabel: "Baixar ATS .xls",
+        excelHint: "As exportações para Excel são geradas no navegador como arquivos .xls XML leves."
       },
       hero: {
         eyebrow: "Desenvolvedor de Software",
@@ -311,9 +341,13 @@ export const portfolioContent = {
           eyebrow: "Contato",
           title: "Vamos conversar sobre backends, integrações e fluxos de entrega.",
           intro:
-            "Para contato profissional, use email ou LinkedIn. Dados pessoais sensíveis do CV não são publicados aqui de propósito.",
+            "Escolha o canal que melhor se ajusta à conversa: WhatsApp para coordenação direta, email para contexto detalhado ou LinkedIn para networking profissional.",
+          whatsappLabel: "Enviar WhatsApp",
           emailLabel: "Enviar email para Patricio",
           linkedinLabel: "Abrir perfil no LinkedIn",
+          whatsappDescription: "Melhor para coordenação rápida.",
+          emailDescription: "Melhor para contexto de projeto e anexos.",
+          linkedinDescription: "Melhor para networking profissional.",
           copyEmailLabel: "Email"
         }
       }
@@ -522,12 +556,40 @@ export const portfolioContent = {
     { name: { en: "Programming", es: "Programación", pt: "Programação" }, items: ["C#", "Java", "TypeScript", "Python", "Node"] },
     { name: { en: "Web", es: "Web", pt: "Web" }, items: ["HTML", "CSS", "SASS", "Bootstrap", "MDB"] },
     { name: { en: "Frameworks", es: "Frameworks", pt: "Frameworks" }, items: [".NET", "Spring Boot", "Entity Framework", "Angular"] },
-    { name: { en: "Databases", es: "Bases de datos", pt: "Bancos de dados" }, items: ["SQL Server", "PostgreSQL", "MySQL"] },
+    { name: { en: "Databases", es: "Bases de datos", pt: "Bancos de dados" }, items: ["SQL Server", "PostgreSQL", "MySQL", "Supabase", "MongoDB"] },
     { name: { en: "Platforms", es: "Plataformas", pt: "Plataformas" }, items: ["Azure Platform", "Google Cloud Platform", "Redis", "Azure Service Bus"] },
     { name: { en: "Delivery tools", es: "Herramientas de entrega", pt: "Ferramentas de entrega" }, items: ["Git", "GitLab", "GitHub", "Bamboo", "Jenkins", "Jira", "SonarQube"] },
-    { name: { en: "Design and QA", es: "Diseño y QA", pt: "Design e QA" }, items: ["Design Patterns", "JUnit", "Postman", "SoapUI", "Draw.io", "Whimsical", "Report Builder"] }
+    { name: { en: "Design and QA", es: "Diseño y QA", pt: "Design e QA" }, items: ["Design Patterns", "JUnit", "Postman", "SoapUI", "Draw.io", "Whimsical", "Excalidraw", "Figma", "Obsidian", "Report Builder"] }
   ],
   projects: [
+    {
+      name: "Gestión de circuito deportivo",
+      context: {
+        en: "Verified public platform",
+        es: "Plataforma pública verificada",
+        pt: "Plataforma pública verificada"
+      },
+      description: {
+        en: "Centralized, fully responsive platform for managing sports circuits, tournaments, players, news, rankings, and related operations.",
+        es: "Plataforma centralizada y completamente responsive para gestionar circuitos deportivos, torneos, jugadores, noticias, rankings y operaciones relacionadas.",
+        pt: "Plataforma centralizada e totalmente responsiva para gerenciar circuitos esportivos, torneios, jogadores, notícias, rankings e operações relacionadas."
+      },
+      link: "https://circuitoarredepadel.com/"
+    },
+    {
+      name: "Incoders corporate site and admin platform",
+      context: {
+        en: "Verified public corporate site",
+        es: "Sitio corporativo público verificado",
+        pt: "Site corporativo público verificado"
+      },
+      description: {
+        en: "Corporate site with an admin panel for estimates and budgets, automatic invoicing, product builder workflows, CRM operations, and a financial dashboard.",
+        es: "Sitio corporativo con panel administrativo para estimaciones y presupuestos, facturación automática, flujos de product builder, operaciones CRM y dashboard financiero.",
+        pt: "Site corporativo com painel administrativo para estimativas e orçamentos, faturamento automático, fluxos de product builder, operações de CRM e dashboard financeiro."
+      },
+      link: "https://www.incoders.com.ar/"
+    },
     {
       name: "Olympus",
       context: { en: "Codeicus — July 2020 to September 2020", es: "Codeicus — Julio 2020 a Septiembre 2020", pt: "Codeicus — Julho 2020 a Setembro 2020" },
