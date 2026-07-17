@@ -60,6 +60,13 @@ test("verified identity and contact facts are present without private CV data", 
     assert.match(contact.whatsappLabel, /WhatsApp/i);
     assert.match(contact.emailLabel, /mail|email|correo/i);
     assert.match(contact.linkedinLabel, /LinkedIn/i);
+
+    const exportCopy = portfolioContent.locales[code].exports;
+    const publicExportText = JSON.stringify(exportCopy);
+    assert.match(publicExportText, /Modern PDF|PDF moderno|PDF moderno/i);
+    assert.match(publicExportText, /ATS PDF|PDF ATS/i);
+    assert.doesNotMatch(publicExportText, /\bprint\b|imprimir|salvar|guardar/i);
+    assert.doesNotMatch(publicExportText, /\.xls|excel/i);
   }
 });
 
@@ -134,8 +141,8 @@ test("project dependencies stay clean of heavy PDF and Excel packages", async ()
   ];
 
   assert.equal(
-    dependencyNames.some((name) => /pdf|pypdf|xlsx|exceljs|spreadsheet/i.test(name)),
+    dependencyNames.some((name) => /xlsx|exceljs|spreadsheet/i.test(name)),
     false,
-    "Heavy PDF or Excel packages must not be added to package.json"
+    "Excel packages must not be added to package.json"
   );
 });

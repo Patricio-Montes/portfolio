@@ -61,11 +61,9 @@ export const portfolioContent = {
         themeLabel: "Choose visual theme"
       },
       exports: {
-        printLabel: "Print / Save PDF",
-        printHint: "Use the browser print dialog and choose Save as PDF.",
-        excelStandardLabel: "Download CV .xls",
-        excelAtsLabel: "Download ATS .xls",
-        excelHint: "Excel exports are generated in your browser as lightweight .xls XML files."
+        modernPdfLabel: "Download Modern PDF CV",
+        atsPdfLabel: "Download ATS PDF CV",
+        pdfHint: "Both files are generated with PDFKit and served as static portfolio assets."
       },
       hero: {
         eyebrow: "Software Developer",
@@ -163,11 +161,9 @@ export const portfolioContent = {
         themeLabel: "Elegir tema visual"
       },
       exports: {
-        printLabel: "Imprimir / Guardar PDF",
-        printHint: "Usá el diálogo de impresión del navegador y elegí Guardar como PDF.",
-        excelStandardLabel: "Descargar CV .xls",
-        excelAtsLabel: "Descargar ATS .xls",
-        excelHint: "Las exportaciones a Excel se generan en el navegador como archivos .xls XML livianos."
+        modernPdfLabel: "Descargar CV PDF moderno",
+        atsPdfLabel: "Descargar CV PDF ATS",
+        pdfHint: "Ambos archivos se generan con PDFKit y se sirven como assets estáticos del portfolio."
       },
       hero: {
         eyebrow: "Desarrollador de Software",
@@ -265,11 +261,9 @@ export const portfolioContent = {
         themeLabel: "Escolher tema visual"
       },
       exports: {
-        printLabel: "Imprimir / Salvar PDF",
-        printHint: "Use a janela de impressão do navegador e escolha Salvar como PDF.",
-        excelStandardLabel: "Baixar CV .xls",
-        excelAtsLabel: "Baixar ATS .xls",
-        excelHint: "As exportações para Excel são geradas no navegador como arquivos .xls XML leves."
+        modernPdfLabel: "Baixar CV PDF moderno",
+        atsPdfLabel: "Baixar CV PDF ATS",
+        pdfHint: "Os dois arquivos são gerados com PDFKit e servidos como assets estáticos do portfólio."
       },
       hero: {
         eyebrow: "Desenvolvedor de Software",

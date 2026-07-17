@@ -7,12 +7,7 @@ import type {
   PortfolioContent,
   ThemeKey
 } from "@/content/portfolio";
-import {
-  buildCvSpreadsheetXml,
-  cvExportFileNames,
-  type CvExportVariant
-} from "@/utils/cvExports";
-import { printCurrentPage } from "@/utils/exportActions";
+import { cvPdfExports } from "@/utils/cvExports";
 
 type PortfolioShellProps = {
   content: PortfolioContent;
@@ -88,25 +83,6 @@ function cx(...values: Array<string | false | null | undefined>) {
 
 function localize<T>(value: Readonly<Record<LanguageCode, T>>, language: LanguageCode): T {
   return value[language];
-}
-
-function downloadCvSpreadsheet(
-  content: PortfolioContent,
-  language: LanguageCode,
-  variant: CvExportVariant
-) {
-  const xml = buildCvSpreadsheetXml(content, language, variant);
-  const blob = new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-
-  anchor.href = url;
-  anchor.download = cvExportFileNames[variant];
-  anchor.rel = "noreferrer";
-  document.body.append(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
 }
 
 function SectionHeading({
@@ -300,7 +276,7 @@ function Hero({
             </a>
           </div>
 
-          <ExportActions content={content} language={language} copy={copy.exports} theme={theme} />
+          <ExportActions copy={copy.exports} theme={theme} />
 
           <p className="mt-6 text-sm leading-6 opacity-70">{copy.hero.availability}</p>
         </div>
@@ -335,43 +311,32 @@ function Hero({
 }
 
 function ExportActions({
-  content,
-  language,
   copy,
   theme
 }: {
-  content: PortfolioContent;
-  language: LanguageCode;
   copy: PortfolioContent["locales"][LanguageCode]["exports"];
   theme: ThemeStyle;
 }) {
   return (
     <div className="no-print mt-8 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-4">
       <div className="flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={() => printCurrentPage()}
+        <a
+          href={cvPdfExports.modern.href}
+          download={cvPdfExports.modern.fileName}
           className={cx("rounded-full px-4 py-2 text-sm font-bold outline-none transition", theme.primaryButton, theme.ring)}
         >
-          {copy.printLabel}
-        </button>
-        <button
-          type="button"
-          onClick={() => downloadCvSpreadsheet(content, language, "standard")}
+          {copy.modernPdfLabel}
+        </a>
+        <a
+          href={cvPdfExports.ats.href}
+          download={cvPdfExports.ats.fileName}
           className={cx("rounded-full border px-4 py-2 text-sm font-bold outline-none transition", theme.secondaryButton, theme.ring)}
         >
-          {copy.excelStandardLabel}
-        </button>
-        <button
-          type="button"
-          onClick={() => downloadCvSpreadsheet(content, language, "ats")}
-          className={cx("rounded-full border px-4 py-2 text-sm font-bold outline-none transition", theme.secondaryButton, theme.ring)}
-        >
-          {copy.excelAtsLabel}
-        </button>
+          {copy.atsPdfLabel}
+        </a>
       </div>
       <p className="mt-3 text-sm leading-6 opacity-75">
-        {copy.printHint} {copy.excelHint}
+        {copy.pdfHint}
       </p>
     </div>
   );
