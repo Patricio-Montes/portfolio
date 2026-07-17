@@ -135,7 +135,7 @@ export const portfolioContent = {
         },
         contact: {
           eyebrow: "Contact",
-          title: "Let’s talk about backend systems, integrations, and delivery workflows.",
+          title: "Let’s talk about software, technology, and solutions built to grow.",
           intro: "Choose the channel that fits the conversation: WhatsApp for direct coordination, email for detailed context, or LinkedIn for professional networking.",
           whatsappLabel: "Message on WhatsApp",
           emailLabel: "Email Patricio",
@@ -226,7 +226,7 @@ export const portfolioContent = {
         },
         contact: {
           eyebrow: "Contacto",
-          title: "Hablemos sobre backends, integraciones y flujos de entrega.",
+          title: "Hablemos sobre software, tecnología y soluciones preparadas para crecer.",
           intro: "Elegí el canal que mejor se ajuste a la conversación: WhatsApp para coordinación directa, email para contexto detallado o LinkedIn para contacto profesional.",
           whatsappLabel: "Escribir por WhatsApp",
           emailLabel: "Enviar email a Patricio",
@@ -313,10 +313,10 @@ export const portfolioContent = {
         es: "Octubre 2019 — Septiembre 2021"
       },
       highlights: {
-        en: ["Built Java DDD APIs with Gradle, ERP full-stack components with Angular, Java, and JUnit, plus a Python backup assistant.", "Maintained and evolved C#/Java financial app features, insurance broker components with C#/Java/HTML/CSS/JavaScript, and Java + Gradle backend integrations with Jira, Jenkins, GitLab, and SonarQube."],
-        es: ["Construyó APIs Java con DDD y Gradle, componentes ERP full-stack con Angular, Java y JUnit, más un asistente de backup en Python.", "Mantuvo y evolucionó funcionalidades de aplicaciones financieras C#/Java, componentes para productores de seguros con C#/Java/HTML/CSS/JavaScript e integraciones backend Java + Gradle con Jira, Jenkins, GitLab y SonarQube."]
+        en: ["Built Java DDD APIs with Gradle, ERP full-stack components with Angular, Java, and xUnit, plus a Python backup assistant.", "Maintained and evolved C#/Java financial app features, insurance broker components with C#/Java/HTML/CSS/JavaScript, and Java + Gradle backend integrations with Jira, Jenkins, GitLab, and SonarQube."],
+        es: ["Construyó APIs Java con DDD y Gradle, componentes ERP full-stack con Angular, Java y xUnit, más un asistente de backup en Python.", "Mantuvo y evolucionó funcionalidades de aplicaciones financieras C#/Java, componentes para productores de seguros con C#/Java/HTML/CSS/JavaScript e integraciones backend Java + Gradle con Jira, Jenkins, GitLab y SonarQube."]
       },
-      tech: ["Java", "Gradle", "Angular", "JUnit", "Python", "C#", "JavaScript", "Jira", "Jenkins", "GitLab", "SonarQube", "DDD"]
+      tech: ["Java", "Gradle", "Angular", "xUnit", "Python", "C#", "JavaScript", "Jira", "Jenkins", "GitLab", "SonarQube", "DDD"]
     },
     {
       company: "Codeicus",
@@ -392,7 +392,7 @@ export const portfolioContent = {
         en: "Platforms",
         es: "Plataformas"
       },
-      items: ["Azure Platform", "Google Cloud Platform", "Azure Service Bus"]
+      items: ["Azure Platform", "Google Cloud Platform", "Azure Service Bus", "Docker"]
     },
     {
       name: {
@@ -406,7 +406,7 @@ export const portfolioContent = {
         en: "Design and QA",
         es: "Diseño y QA"
       },
-      items: ["Design Patterns", "JUnit", "Postman", "SoapUI", "Draw.io", "Excalidraw", "Figma", "Obsidian", "Report Builder"]
+      items: ["Design Patterns", "xUnit", "Draw.io", "Excalidraw", "Figma", "Report Builder"]
     }
   ],
   projects: [
@@ -441,8 +441,8 @@ export const portfolioContent = {
         es: "Codeicus — Julio 2020 a Septiembre 2020"
       },
       description: {
-        en: "Internal project-management software developed with DDD, Java, and Angular; integrated with Jira, Jenkins, and GitLab APIs and included a JUnit unit test suite.",
-        es: "Software interno de gestión de proyectos desarrollado con DDD, Java y Angular; integrado con APIs de Jira, Jenkins y GitLab, e incluyó tests unitarios JUnit."
+        en: "Internal project-management software developed with DDD, Java, and Angular; integrated with Jira, Jenkins, and GitLab APIs and included an xUnit unit test suite.",
+        es: "Software interno de gestión de proyectos desarrollado con DDD, Java y Angular; integrado con APIs de Jira, Jenkins y GitLab, e incluyó tests unitarios xUnit."
       },
       link: ""
     },

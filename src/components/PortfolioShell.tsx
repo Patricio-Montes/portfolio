@@ -389,7 +389,7 @@ function ExportActions({
         <a
           href={cvExports.modern.href}
           download={cvExports.modern.fileName}
-          className={cx("rounded-full px-4 py-2 text-sm font-bold outline-none transition", theme.primaryButton, theme.ring)}
+          className={cx("rounded-full border px-4 py-2 text-sm font-bold outline-none transition", theme.secondaryButton, theme.ring)}
         >
           {copy.modernPdfLabel}
         </a>

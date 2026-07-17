@@ -67,6 +67,20 @@ test("download UI is one details-summary control with Modern and ATS subitems", 
   assert.match(exportActionsSource, /copy\.atsPdfLabel/);
 });
 
+test("Modern and ATS download items share consistent styling", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+  const exportActionsMatch = shell.match(/function ExportActions[\s\S]*?\n}\n\nfunction About/);
+
+  assert.ok(exportActionsMatch, "ExportActions component should be present");
+  const exportActionsSource = exportActionsMatch[0];
+  const anchorClassExpressions = [
+    ...exportActionsSource.matchAll(/<a[\s\S]*?className=\{cx\(([^)]*)\)\}[\s\S]*?>/g)
+  ].map((match) => match[1].replace(/\s+/g, " ").trim());
+
+  assert.equal(anchorClassExpressions.length, 2);
+  assert.equal(anchorClassExpressions[0], anchorClassExpressions[1]);
+});
+
 test("export action helper was removed with browser print behavior", async () => {
   const helperExists = await import("node:fs/promises")
     .then((fs) => fs.stat(new URL("../src/utils/exportActions.ts", import.meta.url)))

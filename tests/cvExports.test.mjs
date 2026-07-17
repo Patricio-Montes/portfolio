@@ -147,6 +147,12 @@ test("generated PDF summaries mirror the concise page summary", async () => {
 
 test("generated PDF CVs mirror corrected page data", async () => {
   const genericMaterialFramework = ["Material", "Design"].join(" ");
+  const forbiddenTools = [
+    ["Post", "man"].join(""),
+    ["Soap", "UI"].join(""),
+    ["Obsid", "ian"].join("")
+  ];
+  const legacyUnitTestTool = ["J", "Unit"].join("");
   const pageText = JSON.stringify(portfolioContent);
   const frameworks = portfolioContent.skills.find((group) => group.name.en === "Frameworks");
   const sideas = portfolioContent.experience.find((item) => item.company === "Sideas");
@@ -166,6 +172,12 @@ test("generated PDF CVs mirror corrected page data", async () => {
   assert.match(pageText, /DDD/);
   assert.match(pageText, /Gradle/);
   assert.match(pageText, /SonarQube/);
+  assert.match(pageText, /\bxUnit\b/);
+  assert.match(pageText, /\bDocker\b/);
+  assert.doesNotMatch(pageText, new RegExp(`\\b${legacyUnitTestTool}\\b`, "i"));
+  for (const forbiddenTool of forbiddenTools) {
+    assert.doesNotMatch(pageText, new RegExp(`\\b${forbiddenTool}\\b`, "i"));
+  }
   assert.match(pageText, /supermarket shelf survey app/i);
   assert.match(pageText, /WCF communication module/i);
   assert.match(pageText, /Codeicus/);
@@ -242,6 +254,12 @@ test("generated PDF CVs mirror corrected page data", async () => {
       assert.match(pdfText, /DDD/);
       assert.match(pdfText, /Gradle/);
       assert.match(pdfText, /SonarQube/);
+      assert.match(pdfText, /\bxUnit\b/);
+      assert.match(skillsText, /Platforms: [\s\S]*Docker|Plataformas: [\s\S]*Docker/);
+      assert.doesNotMatch(pdfText, new RegExp(`\\b${legacyUnitTestTool}\\b`, "i"));
+      for (const forbiddenTool of forbiddenTools) {
+        assert.doesNotMatch(pdfText, new RegExp(`\\b${forbiddenTool}\\b`, "i"));
+      }
       assert.match(pdfText, /supermarket shelf survey app|app de relevamiento de góndolas/i);
       assert.match(pdfText, /WCF communication module|módulo de comunicación WCF/i);
     }

@@ -264,7 +264,7 @@ test("added skills and verified public projects are present", () => {
 
   const designAndQa = portfolioContent.skills.find((group) => group.name.en === "Design and QA");
   assert.ok(designAndQa, "missing Design and QA skill group");
-  for (const tool of ["Excalidraw", "Figma", "Obsidian"]) {
+  for (const tool of ["Excalidraw", "Figma"]) {
     assert.ok(designAndQa.items.includes(tool), `missing ${tool}`);
   }
 
@@ -278,6 +278,43 @@ test("added skills and verified public projects are present", () => {
   assert.ok(incoders, "missing Incoders project");
   assert.match(incoders.description.en, /admin panel/i);
   assert.match(incoders.description.en, /financial dashboard/i);
+});
+
+test("portfolio content removes forbidden visible tools, replaces unit test wording, and adds Docker", () => {
+  const forbiddenTools = [
+    ["Post", "man"].join(""),
+    ["Soap", "UI"].join(""),
+    ["Obsid", "ian"].join("")
+  ];
+  const legacyUnitTestTool = ["J", "Unit"].join("");
+  const publicText = JSON.stringify(portfolioContent);
+
+  for (const forbiddenTool of forbiddenTools) {
+    assert.doesNotMatch(publicText, new RegExp(`\\b${forbiddenTool}\\b`, "i"));
+  }
+
+  assert.doesNotMatch(publicText, new RegExp(`\\b${legacyUnitTestTool}\\b`, "i"));
+  assert.match(publicText, /\bxUnit\b/);
+
+  const designAndQa = portfolioContent.skills.find((group) => group.name.en === "Design and QA");
+  assert.ok(designAndQa?.items.includes("xUnit"), "Design and QA must include xUnit");
+  for (const forbiddenTool of forbiddenTools) {
+    assert.equal(designAndQa?.items.includes(forbiddenTool), false);
+  }
+
+  const platforms = portfolioContent.skills.find((group) => group.name.en === "Platforms");
+  assert.ok(platforms?.items.includes("Docker"), "Platforms must include Docker");
+});
+
+test("contact title copy matches requested bilingual bottom CTA", () => {
+  assert.equal(
+    portfolioContent.locales.es.sections.contact.title,
+    "Hablemos sobre software, tecnología y soluciones preparadas para crecer."
+  );
+  assert.equal(
+    portfolioContent.locales.en.sections.contact.title,
+    "Let’s talk about software, technology, and solutions built to grow."
+  );
 });
 
 
