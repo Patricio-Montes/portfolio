@@ -93,6 +93,20 @@ function localize<T>(value: Readonly<Record<LanguageCode, T>>, language: Languag
 }
 
 const roleChangeCompanies = new Set(["Codeicus", "Luxsys S.R.L", "UNX Digital / Grupo Prominente"]);
+const experienceFlipLabels = {
+  en: {
+    showDetails: "Show role details and reference",
+    showHighlights: "Show experience highlights",
+    reference: "Reference",
+    phone: "Phone"
+  },
+  es: {
+    showDetails: "Ver detalle del puesto y referencia",
+    showHighlights: "Ver destacados de experiencia",
+    reference: "Referencia",
+    phone: "Teléfono"
+  }
+} as const;
 
 function groupExperience(items: readonly ExperienceItem[]): ExperienceGroup[] {
   const groups: ExperienceGroup[] = [];
@@ -469,43 +483,90 @@ function ExperienceGroupCard({
   theme: ThemeStyle;
 }) {
   const isGrouped = group.grouped && group.items.length > 1;
+  const [isFlipped, setIsFlipped] = useState(false);
+  const labels = experienceFlipLabels[language];
+  const flipLabel = isFlipped ? labels.showHighlights : labels.showDetails;
 
   return (
     <li className={cx("relative rounded-[1.75rem] border p-6", theme.card)}>
-      {isGrouped ? <h3 className="text-2xl font-black">{group.company}</h3> : null}
-      <div className={cx(isGrouped && "mt-5 space-y-6")}>
-        {group.items.map((item) => (
-          <article key={`${item.company}-${item.role}-${item.period.en}`}>
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-              <div>
-                <div className="flex items-center gap-3">
-                  <span className={cx("h-3 w-3 rounded-full", theme.timelineDot)} aria-hidden="true" />
-                  <p className={cx("text-sm font-bold uppercase tracking-[0.25em]", theme.accent)}>
-                    {localize(item.period, language)}
-                  </p>
-                </div>
-                <h4 className="mt-3 text-2xl font-black">{item.role}</h4>
-                {isGrouped ? null : <p className="mt-1 font-semibold opacity-80">{item.company}</p>}
-              </div>
-              <div className="flex max-w-xl flex-wrap gap-2 lg:justify-end">
-                {item.tech.map((tech) => (
-                  <span key={tech} className={cx("rounded-full border px-3 py-1 text-xs font-semibold", theme.chip)}>
-                    {tech}
-                  </span>
+      <div className="flex items-start justify-between gap-4">
+        {isGrouped ? <h3 className="text-2xl font-black">{group.company}</h3> : <h3 className="sr-only">{group.company}</h3>}
+        <button
+          type="button"
+          aria-pressed={isFlipped}
+          aria-label={`${flipLabel}: ${group.company}`}
+          onClick={() => setIsFlipped((current) => !current)}
+          className={cx(
+            "shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold outline-none transition",
+            theme.ring,
+            theme.selectorInactive
+          )}
+        >
+          {flipLabel}
+        </button>
+      </div>
+
+      {isFlipped ? (
+        <div className={cx("mt-5", isGrouped && "space-y-6")}>
+          {group.items.map((item) => (
+            <article key={`${item.company}-${item.role}-${item.period.en}-reference`} className={cx("rounded-3xl border p-4", theme.cardMuted)}>
+              <p className={cx("text-sm font-bold uppercase tracking-[0.25em]", theme.accent)}>
+                {localize(item.period, language)}
+              </p>
+              <h4 className="mt-2 text-xl font-black">{item.role}</h4>
+              {isGrouped ? null : <p className="mt-1 font-semibold opacity-80">{item.company}</p>}
+              <div className="mt-4 grid gap-3 text-sm leading-7 opacity-85">
+                {localize(item.highlights as LocalizedList, language).map((highlight) => (
+                  <p key={highlight}>{highlight}</p>
                 ))}
               </div>
-            </div>
-            <ul className="mt-5 grid gap-3 text-sm leading-7 opacity-85">
-              {localize(item.highlights as LocalizedList, language).map((highlight) => (
-                <li key={highlight} className="flex gap-3">
-                  <span className={cx("mt-3 h-1.5 w-1.5 flex-none rounded-full", theme.timelineDot)} aria-hidden="true" />
-                  <span>{highlight}</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))}
-      </div>
+              <dl className="mt-5 grid gap-1 text-sm">
+                <dt className={cx("font-bold", theme.accent)}>{labels.reference}</dt>
+                <dd className="font-semibold">{item.reference.name}</dd>
+                <dd className="opacity-80">{item.reference.role}</dd>
+                <dd className="opacity-80">
+                  <span className="font-semibold">{labels.phone}: </span>
+                  {item.reference.phone}
+                </dd>
+              </dl>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className={cx(isGrouped && "mt-5 space-y-6", !isGrouped && "mt-5")}>
+          {group.items.map((item) => (
+            <article key={`${item.company}-${item.role}-${item.period.en}`}>
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span className={cx("h-3 w-3 rounded-full", theme.timelineDot)} aria-hidden="true" />
+                    <p className={cx("text-sm font-bold uppercase tracking-[0.25em]", theme.accent)}>
+                      {localize(item.period, language)}
+                    </p>
+                  </div>
+                  <h4 className="mt-3 text-2xl font-black">{item.role}</h4>
+                  {isGrouped ? null : <p className="mt-1 font-semibold opacity-80">{item.company}</p>}
+                </div>
+                <div className="flex max-w-xl flex-wrap gap-2 lg:justify-end">
+                  {item.tech.map((tech) => (
+                    <span key={tech} className={cx("rounded-full border px-3 py-1 text-xs font-semibold", theme.chip)}>
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <ul className="mt-5 grid gap-3 text-sm leading-7 opacity-85">
+                {localize(item.highlights as LocalizedList, language).map((highlight) => (
+                  <li key={highlight} className="flex gap-3">
+                    <span className={cx("mt-3 h-1.5 w-1.5 flex-none rounded-full", theme.timelineDot)} aria-hidden="true" />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      )}
     </li>
   );
 }

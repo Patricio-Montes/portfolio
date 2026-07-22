@@ -4,7 +4,7 @@ out/
 .atl/
 *.tsbuildinfo
 
-# Local private source document
+# Generated local standard CV
 CV-Montes-Patricio-Reducido.pdf
 
 npm-debug.log*

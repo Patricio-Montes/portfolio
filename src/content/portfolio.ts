@@ -251,6 +251,11 @@ export const portfolioContent = {
         en: ["Developed RESTful APIs for a real-time fleet-control application covering GPS positioning, fuel, and maintenance workflows.", "Built an AI multi-agent ecosystem with local memory and TDD plus SDD harnesses.", "Created administrative ASPX tools for help desk operations, participated in code review, and managed deployments."],
         es: ["Desarrolló APIs RESTful para control de flotas en tiempo real con GPS, combustible y mantenimiento.", "Construyó un ecosistema multiagente con IA, memoria local y arneses TDD más SDD.", "Creó herramientas ASPX para mesa de ayuda, participó en code review y gestionó despliegues."]
       },
+      reference: {
+        name: "Enrique Candia",
+        role: "Technical Leader",
+        phone: "(011) 6244-0404"
+      },
       tech: [".NET", "REST APIs", "ASPX", "TDD", "SDD"]
     },
     {
@@ -263,6 +268,11 @@ export const portfolioContent = {
       highlights: {
         en: ["Created a .NET 7 microservice boilerplate serving a React Native web/backoffice and Android/iOS mobile apps for commercial-center discounts.", "Ran horizontal-scaling experiments for interconnected .NET and Node.js social-messaging apps and detected memory and synchronization problems.", "Supported documentation, estimates, development, tests, and implementation."],
         es: ["Creó un boilerplate .NET 7 para microservicios que servían una web/backoffice React Native y apps Android/iOS de descuentos.", "Experimentó con escalado horizontal de aplicaciones .NET y Node.js interconectadas y detectó problemas de memoria y sincronización.", "Acompañó documentación, estimaciones, desarrollo, pruebas e implementación."]
+      },
+      reference: {
+        name: "Mariano Filipoff",
+        role: "Arq. Software",
+        phone: "(011) 6533-1716"
       },
       tech: ["Envoyer", ".NET 7", "Azure Platform", "Redis", "Azure Service Bus", "Node.js"]
     },
@@ -277,6 +287,11 @@ export const portfolioContent = {
         en: ["Worked on a survey personalization app for a client in the Netherlands with Argentina offices.", "Supported requirements understanding, documentation, feature development, and Azure deployments."],
         es: ["Trabajó en una app de personalización de encuestas para un cliente de Países Bajos con oficinas en Argentina.", "Acompañó requerimientos, documentación, desarrollo de funcionalidades y despliegues en Azure."]
       },
+      reference: {
+        name: "Marcos Vodanovich",
+        role: "PL",
+        phone: "(011) 5616-8329"
+      },
       tech: ["Azure", ".NET Core", "Angular", "Angular Material"]
     },
     {
@@ -289,6 +304,11 @@ export const portfolioContent = {
       highlights: {
         en: ["Worked on Apex America modernization.", "Developed .NET Core 5 APIs and services for cross-application business needs."],
         es: ["Trabajó en la modernización de Apex America.", "Desarrolló APIs y servicios .NET Core 5 para necesidades de negocio entre aplicaciones."]
+      },
+      reference: {
+        name: "Adrian Gonzales",
+        role: "CTO",
+        phone: "(351) 304-7426"
       },
       tech: ["Google Cloud Platform", ".NET Core 5", "C#", "APIs"]
     },
@@ -303,6 +323,11 @@ export const portfolioContent = {
         en: ["Defined architecture decisions for communication between applications.", "Implemented a .NET Core API Gateway with Ocelot on Google App Engine.", "Integrated OIDC tokens from GCP to solve authentication; the architecture was validated by Google Argentina DevOps, and he trained other teams."],
         es: ["Definió arquitectura para comunicación entre aplicaciones e implementó un API Gateway .NET Core con Ocelot en Google App Engine.", "Integró tokens OIDC desde GCP para resolver autenticación; la arquitectura fue validada por Google Argentina DevOps y capacitó a otros equipos."]
       },
+      reference: {
+        name: "Adrian Gonzales",
+        role: "CTO",
+        phone: "(351) 304-7426"
+      },
       tech: ["Google Cloud Platform", "Google App Engine", ".NET Core", "Ocelot", "OIDC"]
     },
     {
@@ -315,6 +340,11 @@ export const portfolioContent = {
       highlights: {
         en: ["Built Java DDD APIs with Gradle, ERP full-stack components with Angular, Java, and xUnit, plus a Python backup assistant.", "Maintained and evolved C#/Java financial app features, insurance broker components with C#/Java/HTML/CSS/JavaScript, and Java + Gradle backend integrations with Jira, Jenkins, GitLab, and SonarQube."],
         es: ["Construyó APIs Java con DDD y Gradle, componentes ERP full-stack con Angular, Java y xUnit, más un asistente de backup en Python.", "Mantuvo y evolucionó funcionalidades de aplicaciones financieras C#/Java, componentes para productores de seguros con C#/Java/HTML/CSS/JavaScript e integraciones backend Java + Gradle con Jira, Jenkins, GitLab y SonarQube."]
+      },
+      reference: {
+        name: "Ricardo Ángel Siciliano",
+        role: "PL",
+        phone: "(221) 314-3602"
       },
       tech: ["Java", "Gradle", "Angular", "xUnit", "Python", "C#", "JavaScript", "Jira", "Jenkins", "GitLab", "SonarQube", "DDD"]
     },
@@ -329,6 +359,11 @@ export const portfolioContent = {
         en: ["Built internal credit management web tools with Java, Maven, and JSF, and collaborated on construction ERP domains using Draw.io and Whimsical.", "Maintained Android/iOS supermarket shelf survey app releases in React Native with minor fixes, and reviewed a C# .NET WCF communication module."],
         es: ["Construyó herramientas web internas de gestión crediticia con Java, Maven y JSF, y colaboró en dominios de ERP para construcción usando Draw.io y Whimsical.", "Mantuvo releases Android/iOS de una app de relevamiento de góndolas de supermercado en React Native con ajustes menores, y revisó un módulo de comunicación WCF en C# .NET."]
       },
+      reference: {
+        name: "Ricardo Ángel Siciliano",
+        role: "PL",
+        phone: "(221) 314-3602"
+      },
       tech: ["Java", "Maven", "JSF", "Draw.io", "Whimsical", "React Native", "C#"]
     },
     {
@@ -342,7 +377,12 @@ export const portfolioContent = {
         en: ["Developed back-end support for BPM-managed business processes, integrated BPM with REST APIs for e-commerce and messaging, linked SQL databases with Softland and Bejerman ERPs, and supported business consulting."],
         es: ["Desarrolló back-end para procesos BPM, integró BPM con APIs REST para e-commerce y mensajería, vinculó bases SQL con ERPs Softland y Bejerman, y acompañó consultoría."]
       },
-      tech: ["BPM", "REST APIs", "SQL", "Softland", "Bejerman"]
+      reference: {
+        name: "Emanuel Gutierrez",
+        role: "PL",
+        phone: "(011) 3684-2464"
+      },
+      tech: ["BPM", "REST APIs", "SQL", "Softland", "Bejerman", "C#", ".NET Framework 4.5"]
     },
     {
       company: "Luxsys S.R.L",
@@ -355,7 +395,12 @@ export const portfolioContent = {
         en: ["Designed BPM solutions with the development team and estimated incidents with technical resolution details, delegation, and project follow-up."],
         es: ["Diseñó soluciones BPM con el equipo y estimó incidentes con detalles técnicos de resolución, delegación y seguimiento de proyectos."]
       },
-      tech: ["BPM", "Technical leadership", "Estimation", "Project follow-up"]
+      reference: {
+        name: "Emanuel Gutierrez",
+        role: "PL",
+        phone: "(011) 3684-2464"
+      },
+      tech: ["BPM", "Technical leadership", "Estimation", "Project follow-up", "C#", ".NET Framework 4.5"]
     }
   ],
   skills: [

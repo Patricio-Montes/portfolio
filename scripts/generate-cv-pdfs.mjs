@@ -9,6 +9,7 @@ import { cvPdfExportLanguages, getCvPdfExports } from "../src/utils/cvExports.ts
 
 const rootDirectory = dirname(fileURLToPath(new URL("../package.json", import.meta.url)));
 const outputDirectory = join(rootDirectory, "public", "downloads");
+const localStandardPdfPath = join(rootDirectory, "CV-Montes-Patricio-Reducido.pdf");
 const obsoletePdfAssets = [
   "patricio-montes-cv-modern.pdf",
   "patricio-montes-cv-ats.pdf",
@@ -27,7 +28,8 @@ const sectionLabels = {
     professionalExperience: "Professional experience",
     projects: "Projects",
     education: "Education",
-    technologies: "Technologies"
+    technologies: "Technologies",
+    reference: "Reference"
   },
   es: {
     coreSkills: "Habilidades principales",
@@ -39,7 +41,8 @@ const sectionLabels = {
     professionalExperience: "Experiencia profesional",
     projects: "Proyectos",
     education: "Educación",
-    technologies: "Tecnologías"
+    technologies: "Tecnologías",
+    reference: "Referencia"
   }
 };
 
@@ -101,6 +104,10 @@ function groupExperience(items) {
   return groups;
 }
 
+function formatReference(item, labels) {
+  return `${labels.reference}: ${item.role} — ${item.reference.name}, ${item.reference.role}, ${item.reference.phone}`;
+}
+
 function addModernExperienceItem(doc, item, language, labels, options = {}) {
   const left = options.indent ? 62 : 48;
   const titleWidth = options.indent ? 300 : 335;
@@ -130,6 +137,13 @@ function addModernExperienceItem(doc, item, language, labels, options = {}) {
     width: bulletWidth + 20,
     lineGap: 1
   });
+  if (options.includeReference !== false) {
+    doc.moveDown(0.12);
+    doc.font("Helvetica").fontSize(8).fillColor("#475569").text(formatReference(item, labels), {
+      width: bulletWidth + 20,
+      lineGap: 1
+    });
+  }
   doc.moveDown(0.35);
   doc.x = 48;
 }
@@ -147,18 +161,21 @@ function addAtsExperienceItem(doc, item, language, labels, options = {}) {
   }
   doc.x = left;
   doc.font("Helvetica").fontSize(8.5).text(`${labels.technologies}: ${item.tech.join(", ")}`, { width });
+  if (options.includeReference !== false) {
+    doc.x = left;
+    doc.font("Helvetica").fontSize(8.5).text(formatReference(item, labels), { width });
+  }
   doc.moveDown(0.35);
   doc.x = 48;
 }
 
-async function writePdf(fileName, render) {
-  const outputPath = join(outputDirectory, fileName);
+async function writePdf(outputPath, render, title) {
   const doc = new PDFDocument({
     size: "A4",
     margin: 48,
     compress: false,
     info: {
-      Title: fileName.includes("ats") ? "Patricio Montes Güemez - ATS CV" : "Patricio Montes Güemez - Modern CV",
+      Title: title,
       Author: portfolioContent.profile.name,
       Subject: "Public portfolio CV export"
     }
@@ -212,8 +229,16 @@ function renderModernCv(doc, language) {
       doc.moveDown(0.25);
       for (const item of group.items) {
         ensureSpace(doc, 76);
-        addModernExperienceItem(doc, item, language, labels, { grouped: true, indent: true });
+        addModernExperienceItem(doc, item, language, labels, { grouped: true, indent: true, includeReference: false });
       }
+      for (const item of group.items) {
+        doc.x = 62;
+        doc.font("Helvetica").fontSize(8).fillColor("#475569").text(formatReference(item, labels), {
+          width: 482,
+          lineGap: 1
+        });
+      }
+      doc.moveDown(0.35);
       continue;
     }
 
@@ -268,8 +293,13 @@ function renderAtsCv(doc, language) {
       doc.moveDown(0.2);
       for (const item of group.items) {
         ensureSpace(doc, 78);
-        addAtsExperienceItem(doc, item, language, labels, { grouped: true, indent: true });
+        addAtsExperienceItem(doc, item, language, labels, { grouped: true, indent: true, includeReference: false });
       }
+      for (const item of group.items) {
+        doc.x = 58;
+        doc.font("Helvetica").fontSize(8.5).text(formatReference(item, labels), { width: 460 });
+      }
+      doc.moveDown(0.35);
       continue;
     }
 
@@ -301,6 +331,20 @@ await Promise.all(obsoletePdfAssets.map((fileName) => rm(join(outputDirectory, f
 for (const language of cvPdfExportLanguages) {
   const exportsForLanguage = getCvPdfExports(language);
 
-  await writePdf(exportsForLanguage.modern.fileName, (doc) => renderModernCv(doc, language));
-  await writePdf(exportsForLanguage.ats.fileName, (doc) => renderAtsCv(doc, language));
+  await writePdf(
+    join(outputDirectory, exportsForLanguage.modern.fileName),
+    (doc) => renderModernCv(doc, language),
+    `Patricio Montes Güemez - Modern CV (${language.toUpperCase()})`
+  );
+  await writePdf(
+    join(outputDirectory, exportsForLanguage.ats.fileName),
+    (doc) => renderAtsCv(doc, language),
+    `Patricio Montes Güemez - ATS CV (${language.toUpperCase()})`
+  );
 }
+
+await writePdf(
+  localStandardPdfPath,
+  (doc) => renderAtsCv(doc, "es"),
+  "Patricio Montes Güemez - Standard local CV"
+);

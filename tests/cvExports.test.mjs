@@ -21,6 +21,14 @@ function textBetween(text, start, end) {
   return endIndex === -1 ? text.slice(startIndex) : text.slice(startIndex, endIndex);
 }
 
+function textThrough(text, start, end) {
+  const startIndex = text.indexOf(start);
+  assert.notEqual(startIndex, -1, `missing start marker: ${start}`);
+  const endIndex = text.indexOf(end, startIndex + start.length);
+
+  return endIndex === -1 ? text.slice(startIndex) : text.slice(startIndex, endIndex + end.length);
+}
+
 test("CV exports expose downloadable Modern and ATS PDF assets", async () => {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -263,5 +271,93 @@ test("generated PDF CVs mirror corrected page data", async () => {
       assert.match(pdfText, /supermarket shelf survey app|app de relevamiento de góndolas/i);
       assert.match(pdfText, /WCF communication module|módulo de comunicación WCF/i);
     }
+  }
+});
+
+test("generated Modern and ATS PDFs include references for every public experience", async () => {
+  for (const item of portfolioContent.experience) {
+    assert.ok(item.reference, `${item.company} ${item.role} is missing a reference person`);
+    assert.match(item.reference.name.trim(), /\S/, `${item.company} ${item.role} reference name cannot be blank`);
+    assert.match(item.reference.role.trim(), /\S/, `${item.company} ${item.role} reference role/title cannot be blank`);
+    assert.match(item.reference.phone.trim(), /\d/, `${item.company} ${item.role} reference phone must include digits`);
+  }
+
+  for (const language of cvPdfExportLanguages) {
+    for (const variant of cvPdfVariants) {
+      const pdf = await readFile(new URL(`../public/downloads/${getCvPdfExports(language)[variant].fileName}`, import.meta.url));
+      const pdfText = extractPdfText(pdf);
+
+      for (const item of portfolioContent.experience) {
+        const experienceText = textThrough(pdfText, item.company, item.reference.phone);
+
+        assert.match(experienceText, new RegExp(item.role.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+        assert.match(experienceText, new RegExp(item.reference.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+        assert.match(experienceText, new RegExp(item.reference.role.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+        assert.match(experienceText, new RegExp(item.reference.phone.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+      }
+    }
+  }
+});
+
+test("generated Modern and ATS PDFs include verified Luxsys C# and .NET Framework 4.5 technologies", async () => {
+  const luxsysItems = portfolioContent.experience.filter((item) => item.company === "Luxsys S.R.L");
+
+  assert.equal(luxsysItems.length, 2);
+  for (const expectedRole of [
+    "IT Developer | October 2016 — December 2018",
+    "Technical Leader | December 2018 — October 2019"
+  ]) {
+    const item = luxsysItems.find((experience) => `${experience.role} | ${experience.period.en}` === expectedRole);
+
+    assert.ok(item, `missing Luxsys role: ${expectedRole}`);
+    assert.ok(item.tech.includes("C#"), `${expectedRole} must include C# in page data`);
+    assert.ok(item.tech.includes(".NET Framework 4.5"), `${expectedRole} must include .NET Framework 4.5 in page data`);
+  }
+
+  for (const language of cvPdfExportLanguages) {
+    for (const variant of cvPdfVariants) {
+      const pdf = await readFile(new URL(`../public/downloads/${getCvPdfExports(language)[variant].fileName}`, import.meta.url));
+      const pdfText = extractPdfText(pdf);
+      const luxsysText = textBetween(pdfText, "Luxsys S.R.L", variant === "modern" ? "SELECTED PROJECTS" : "PROJECTS");
+
+      for (const role of ["Technical Leader", "IT Developer"]) {
+        const roleText = textBetween(luxsysText, role, role === "Technical Leader" ? "IT Developer" : "SELECTED PROJECTS");
+
+        assert.match(roleText, /C#/);
+        assert.match(roleText, /\.NET Framework 4\.5/);
+      }
+    }
+  }
+});
+
+test("root standard local PDF includes references and updated Luxsys technologies", async () => {
+  const pdf = await readFile(new URL("../CV-Montes-Patricio-Reducido.pdf", import.meta.url));
+  const pdfText = extractPdfText(pdf);
+
+  assert.equal(pdf.subarray(0, 5).toString("ascii"), "%PDF-");
+  assert.match(pdf.toString("latin1"), /%%EOF\s*$/);
+
+  for (const expectedText of [
+    "Enrique Candia",
+    "Mariano Filipoff",
+    "Adrian Gonzales",
+    "Ricardo Ángel Siciliano",
+    "Emanuel Gutierrez",
+    "(011) 6244-0404",
+    "(011) 6533-1716",
+    "(351) 304-7426",
+    "(221) 314-3602",
+    "(011) 3684-2464"
+  ]) {
+    assert.match(pdfText, new RegExp(expectedText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+
+  assert.match(pdfText, /Luxsys S\.R\.L/);
+
+  for (const role of ["Technical Leader", "IT Developer"]) {
+    const roleText = textBetween(pdfText, role, role === "Technical Leader" ? "IT Developer" : "PROJECTS");
+
+    assert.match(roleText, /C#/);
+    assert.match(roleText, /\.NET Framework 4\.5/);
   }
 });

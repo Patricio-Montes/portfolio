@@ -56,7 +56,10 @@ test("verified identity and contact facts are present without private CV data", 
     "whatsapp"
   ]);
 
-  const publicText = JSON.stringify(portfolioContent);
+  const publicText = JSON.stringify({
+    profile: portfolioContent.profile,
+    contact: Object.fromEntries(languageCodes.map((code) => [code, portfolioContent.locales[code].sections.contact]))
+  });
   for (const forbidden of [
     /\bDNI\b/i,
     /\bCUIL\b/i,
@@ -229,6 +232,35 @@ test("experience ownership and same-company data preserve verified CV facts", ()
     false,
     "UNX must not own Ssr .Net Developer"
   );
+});
+
+test("each public experience exposes a reference person with role and phone", () => {
+  for (const item of portfolioContent.experience) {
+    assert.notEqual(item.company, "ECIC Systems", "ECIC must not be added as a public experience");
+    assert.ok(item.reference, `${item.company} ${item.role} is missing a reference person`);
+    assert.equal(typeof item.reference.name, "string", `${item.company} ${item.role} reference needs a name`);
+    assert.equal(typeof item.reference.role, "string", `${item.company} ${item.role} reference needs a role/title`);
+    assert.equal(typeof item.reference.phone, "string", `${item.company} ${item.role} reference needs a phone`);
+    assert.match(item.reference.name.trim(), /\S/, `${item.company} ${item.role} reference name cannot be blank`);
+    assert.match(item.reference.role.trim(), /\S/, `${item.company} ${item.role} reference role/title cannot be blank`);
+    assert.match(item.reference.phone.trim(), /\d/, `${item.company} ${item.role} reference phone must include digits`);
+  }
+});
+
+test("Luxsys public roles include verified C# and .NET Framework 4.5 technologies", () => {
+  const luxsysItems = portfolioContent.experience.filter((item) => item.company === "Luxsys S.R.L");
+
+  assert.equal(luxsysItems.length, 2);
+  for (const expectedRole of [
+    "IT Developer | October 2016 — December 2018",
+    "Technical Leader | December 2018 — October 2019"
+  ]) {
+    const item = luxsysItems.find((experience) => `${experience.role} | ${experience.period.en}` === expectedRole);
+
+    assert.ok(item, `missing Luxsys role: ${expectedRole}`);
+    assert.ok(item.tech.includes("C#"), `${expectedRole} must include C#`);
+    assert.ok(item.tech.includes(".NET Framework 4.5"), `${expectedRole} must include .NET Framework 4.5`);
+  }
 });
 
 test("education avoids unverified graduation or fluency claims", () => {

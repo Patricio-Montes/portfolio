@@ -52,6 +52,22 @@ test("hero card is flippable with an accessible button and not hover-only", asyn
   assert.doesNotMatch(shell, /hover:[^"']*rotate-y|group-hover:[^"']*rotate-y/i);
 });
 
+test("experience group cards are flippable with accessible buttons and not hover-only", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+  const experienceGroupCardMatch = shell.match(/function ExperienceGroupCard[\s\S]*?\n}\n\nfunction Skills/);
+
+  assert.ok(experienceGroupCardMatch, "ExperienceGroupCard component should be present");
+  const experienceGroupCardSource = experienceGroupCardMatch[0];
+
+  assert.match(experienceGroupCardSource, /useState\(false\)/);
+  assert.match(experienceGroupCardSource, /<button\b/);
+  assert.match(experienceGroupCardSource, /type="button"/);
+  assert.match(experienceGroupCardSource, /aria-pressed=/);
+  assert.match(experienceGroupCardSource, /aria-label=/);
+  assert.match(experienceGroupCardSource, /reference/);
+  assert.doesNotMatch(experienceGroupCardSource, /hover:[^"']*rotate-y|group-hover:[^"']*rotate-y/i);
+});
+
 test("download UI is one details-summary control with Modern and ATS subitems", async () => {
   const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
   const exportActionsMatch = shell.match(/function ExportActions[\s\S]*?\n}\n\nfunction About/);
