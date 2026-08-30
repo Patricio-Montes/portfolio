@@ -346,7 +346,7 @@ function Hero({
 
           {isHeroCardFlipped ? (
             <div className="mt-5">
-              <p className="text-sm font-semibold opacity-70">{content.profile.title}</p>
+              <p className="text-sm font-semibold opacity-70">{localize(content.profile.title, language)}</p>
               <p className="mt-2 text-3xl font-black">{content.profile.name}</p>
               <p className="mt-5 max-h-[34rem] overflow-y-auto pr-1 text-sm leading-7 opacity-85">
                 {copy.hero.cardBack}
@@ -355,7 +355,7 @@ function Hero({
           ) : (
             <div className="mt-5 space-y-5">
               <div>
-                <p className="text-sm font-semibold opacity-70">{content.profile.title}</p>
+                <p className="text-sm font-semibold opacity-70">{localize(content.profile.title, language)}</p>
                 <p className="mt-2 text-3xl font-black">{content.profile.name}</p>
               </div>
               <div className="flex flex-wrap gap-2">

@@ -197,7 +197,7 @@ function renderModernCv(doc, language) {
   doc.fillColor("#F8FAFC").font("Helvetica-Bold").fontSize(25).text(portfolioContent.profile.name, 48, 42, {
     width: 330
   });
-  doc.font("Helvetica").fontSize(12).fillColor("#CBD5E1").text(portfolioContent.profile.title, 48, 76);
+  doc.font("Helvetica").fontSize(12).fillColor("#CBD5E1").text(localize(portfolioContent.profile.title, language), 48, 76);
   doc.fontSize(8.5).fillColor("#E2E8F0").text(publicContactLines().join("\n"), 365, 43, {
     width: 180,
     align: "right",
@@ -269,7 +269,7 @@ function renderAtsCv(doc, language) {
   const labels = sectionLabels[language];
 
   doc.font("Helvetica-Bold").fontSize(18).fillColor("#000000").text(portfolioContent.profile.name);
-  doc.font("Helvetica").fontSize(10).text(portfolioContent.profile.title);
+  doc.font("Helvetica").fontSize(10).text(localize(portfolioContent.profile.title, language));
   doc.moveDown(0.35).fontSize(9).text(publicContactLines().join(" | "), { width: 500 });
 
   addSectionTitle(doc, labels.professionalSummary, "#000000");

@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Patricio Montes Güemez | Software Developer",
+  title: "Patricio Montes Güemez | Software Engineer",
   description:
-    "Multilingual static portfolio for Patricio Montes Güemez, a Software Developer focused on .NET APIs, cloud integrations, and engineering tooling.",
+    "Multilingual static portfolio for Patricio Montes Güemez, a Software Engineer focused on .NET APIs, cloud integrations, and engineering tooling.",
   applicationName: "Patricio Montes Güemez Portfolio",
   authors: [{ name: "Patricio Montes Güemez" }],
   creator: "Patricio Montes Güemez",
   keywords: [
     "Patricio Montes Güemez",
-    "Software Developer",
+    "Software Engineer",
     ".NET",
     "C#",
     "Java",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "Google Cloud Platform"
   ],
   openGraph: {
-    title: "Patricio Montes Güemez | Software Developer",
+    title: "Patricio Montes Güemez | Software Engineer",
     description:
       "Static multilingual portfolio highlighting verified experience in .NET, APIs, cloud platforms, integrations, and engineering workflows.",
     type: "website",

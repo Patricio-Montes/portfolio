@@ -142,12 +142,14 @@ test("generated PDF summaries mirror the concise page summary", async () => {
 
       assert.match(pdfText, new RegExp(expectedSummary.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
       if (language === "en") {
-        assert.match(pdfText, /Software Developer with 10\+/);
-        assert.doesNotMatch(pdfText, /Software engineer with 10\+/i);
+        assert.match(pdfText, /Software Engineer with 10\+/);
+        assert.match(pdfText, /Software Engineer/);
+        assert.doesNotMatch(pdfText, /Software Developer with 10\+/i);
       }
       if (language === "es") {
-        assert.match(pdfText, /Desarrollador de Software con 10\+/);
-        assert.doesNotMatch(pdfText, /Ingeniero de software con 10\+/);
+        assert.match(pdfText, /Ingeniero de Software con 10\+/);
+        assert.match(pdfText, /Ingeniero de Software/);
+        assert.doesNotMatch(pdfText, /Desarrollador de Software con 10\+/i);
       }
     }
   }
@@ -270,6 +272,11 @@ test("generated PDF CVs mirror corrected page data", async () => {
       }
       assert.match(pdfText, /supermarket shelf survey app|app de relevamiento de góndolas/i);
       assert.match(pdfText, /WCF communication module|módulo de comunicación WCF/i);
+      if (language === "en") {
+        assert.match(pdfText, /router for balanced LLM distribution/);
+      } else {
+        assert.match(pdfText, /router para distribución balanceada de LLMs/);
+      }
     }
   }
 });

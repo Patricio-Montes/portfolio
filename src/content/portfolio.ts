@@ -9,7 +9,10 @@ export type LocalizedList = Record<LanguageCode, readonly string[]>;
 export const portfolioContent = {
   profile: {
     name: "Patricio Montes Güemez",
-    title: "Software Developer",
+    title: {
+      en: "Software Engineer",
+      es: "Ingeniero de Software"
+    },
     email: "montesgpatricio@gmail.com",
     whatsapp: "https://wa.me/5491140518040",
     linkedin: "https://www.linkedin.com/in/patricio-montes-88212448/"
@@ -77,9 +80,9 @@ export const portfolioContent = {
         downloadsLabel: "Download CV PDFs"
       },
       hero: {
-        eyebrow: "Software Developer",
+        eyebrow: "Software Engineer",
         title: "Backend, cloud, and product delivery with a practical engineering mindset.",
-        subtitle: "Software Developer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
+        subtitle: "Software Engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
         primaryCta: "Contact me",
         secondaryCta: "View experience",
         availability: "Available for software development, architecture support, and integration work.",
@@ -109,7 +112,7 @@ export const portfolioContent = {
         about: {
           eyebrow: "Profile",
           title: "A delivery-focused developer who connects business process, backend architecture, and team execution.",
-          intro: "Patricio Montes Güemez is a Software Developer with verified experience in .NET, Java, TypeScript, Python, Node, databases, cloud platforms, and integrations.",
+          intro: "Patricio Montes Güemez is a Software Engineer with verified experience in .NET, Java, TypeScript, Python, Node, databases, cloud platforms, and integrations.",
           details: ["Recent work includes RESTful APIs for real-time fleet control, an AI multi-agent ecosystem with local memory and TDD plus SDD harnesses, microservice boilerplates, cloud deployments, API Gateway architecture, and administrative support tooling.", "This public portfolio intentionally uses only verified professional facts and omits sensitive personal data that is not appropriate for a static public site."]
         },
         experience: {
@@ -168,9 +171,9 @@ export const portfolioContent = {
         downloadsLabel: "Descargar CVs PDF"
       },
       hero: {
-        eyebrow: "Desarrollador de Software",
+        eyebrow: "Ingeniero de Software",
         title: "Backend, cloud y entrega de producto con criterio práctico de ingeniería.",
-        subtitle: "Desarrollador de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana.",
+        subtitle: "Ingeniero de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana.",
         primaryCta: "Contactarme",
         secondaryCta: "Ver experiencia",
         availability: "Disponible para desarrollo de software, soporte de arquitectura e integraciones.",
@@ -200,7 +203,7 @@ export const portfolioContent = {
         about: {
           eyebrow: "Perfil",
           title: "Un desarrollador enfocado en entrega que conecta procesos de negocio, arquitectura backend y ejecución de equipo.",
-          intro: "Patricio Montes Güemez es Software Developer con experiencia verificada en .NET, Java, TypeScript, Python, Node, bases de datos, plataformas cloud e integraciones.",
+          intro: "Patricio Montes Güemez es Ingeniero de Software con experiencia verificada en .NET, Java, TypeScript, Python, Node, bases de datos, plataformas cloud e integraciones.",
           details: ["Su trabajo reciente incluye APIs RESTful para control de flota en tiempo real, un ecosistema multiagente con IA, memoria local y arneses TDD más SDD, boilerplates de microservicios, despliegues cloud, arquitectura de API Gateway y herramientas administrativas de soporte.", "El portfolio público usa únicamente datos profesionales verificados y omite información personal sensible que no corresponde publicar en un sitio estático."]
         },
         experience: {
@@ -248,8 +251,8 @@ export const portfolioContent = {
         es: "Julio 2024 — Abril 2026"
       },
       highlights: {
-        en: ["Developed RESTful APIs for a real-time fleet-control application covering GPS positioning, fuel, and maintenance workflows.", "Built an AI multi-agent ecosystem with local memory and TDD plus SDD harnesses.", "Created administrative ASPX tools for help desk operations, participated in code review, and managed deployments."],
-        es: ["Desarrolló APIs RESTful para control de flotas en tiempo real con GPS, combustible y mantenimiento.", "Construyó un ecosistema multiagente con IA, memoria local y arneses TDD más SDD.", "Creó herramientas ASPX para mesa de ayuda, participó en code review y gestionó despliegues."]
+        en: ["Developed RESTful APIs for a real-time fleet-control application covering GPS positioning, fuel, and maintenance workflows.", "Built an AI multi-agent ecosystem with local memory, a router for balanced LLM distribution, and TDD plus SDD harnesses.", "Created administrative ASPX tools for help desk operations, participated in code review, and managed deployments."],
+        es: ["Desarrolló APIs RESTful para control de flotas en tiempo real con GPS, combustible y mantenimiento.", "Construyó un ecosistema multiagente con IA, memoria local, un router para distribución balanceada de LLMs y arneses TDD más SDD.", "Creó herramientas ASPX para mesa de ayuda, participó en code review y gestionó despliegues."]
       },
       reference: {
         name: "Enrique Candia",

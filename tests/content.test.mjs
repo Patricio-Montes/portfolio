@@ -41,7 +41,10 @@ test("portfolio shell defaults to Spanish language and notebook theme", async ()
 
 test("verified identity and contact facts are present without private CV data", () => {
   assert.equal(portfolioContent.profile.name, "Patricio Montes Güemez");
-  assert.equal(portfolioContent.profile.title, "Software Developer");
+  assert.deepEqual(portfolioContent.profile.title, {
+    en: "Software Engineer",
+    es: "Ingeniero de Software"
+  });
   assert.equal(portfolioContent.profile.email, "montesgpatricio@gmail.com");
   assert.equal(portfolioContent.profile.whatsapp, "https://wa.me/5491140518040");
   assert.equal(
@@ -93,6 +96,8 @@ test("experience timeline keeps verified roles, dates, and localized copy", () =
   assert.equal(urbetrack.role, "Sr .Net Developer");
   assert.equal(urbetrack.period.en, "July 2024 — April 2026");
   assert.ok(urbetrack.tech.includes(".NET"));
+  assert.match(urbetrack.highlights.en[1], /router for balanced LLM distribution/);
+  assert.match(urbetrack.highlights.es[1], /router para distribución balanceada de LLMs/);
 
   const architect = portfolioContent.experience.find(
     (item) => item.company === "UNX Digital / Grupo Prominente" && item.role === "Software Architect"
@@ -126,8 +131,8 @@ test("hero focus chips use the requested professional positioning only", () => {
 
 test("page profile summary is concise and covers the required positioning", () => {
   const expectedSummaries = {
-    en: "Software Developer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
-    es: "Desarrollador de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana."
+    en: "Software Engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
+    es: "Ingeniero de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana."
   };
 
   for (const code of languageCodes) {
@@ -136,12 +141,12 @@ test("page profile summary is concise and covers the required positioning", () =
     assert.equal(summary, expectedSummaries[code]);
     assert.ok(summary.length <= 210, `${code} summary must stay short enough for PDF layout`);
     if (code === "en") {
-      assert.match(summary, /^Software Developer\b/);
-      assert.doesNotMatch(summary, /^Software engineer\b/i);
+      assert.match(summary, /^Software Engineer\b/);
+      assert.doesNotMatch(summary, /^Software Developer\b/i);
     }
     if (code === "es") {
-      assert.match(summary, /^Desarrollador de Software\b/);
-      assert.doesNotMatch(summary, /^Ingeniero de software\b/);
+      assert.match(summary, /^Ingeniero de Software\b/);
+      assert.doesNotMatch(summary, /^Desarrollador de Software\b/i);
     }
     assert.match(summary, /10\+/);
     assert.match(summary, /architecture|arquitectura/i);
