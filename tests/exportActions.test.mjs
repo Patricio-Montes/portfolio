@@ -121,11 +121,13 @@ test("export action helper was removed with browser print behavior", async () =>
   assert.equal(helperExists, false);
 });
 
-test("app icon exists and contains the stylized P mark", async () => {
+test("app icon is a minimal monochrome P mark", async () => {
   const icon = await readFile(new URL("../app/icon.svg", import.meta.url), "utf8");
 
   assert.match(icon, /^<svg\b/);
   assert.match(icon, /<title>Patricio Montes portfolio icon<\/title>/);
-  assert.match(icon, /id="mark"/);
-  assert.match(icon, /d="M158 386V126h126/);
+  assert.match(icon, /viewBox="0 0 64 64"/);
+  assert.match(icon, /id="mark" fill="#000"/);
+  assert.match(icon, /d="M14 52V12H35/);
+  assert.doesNotMatch(icon, /linearGradient|url\(#/);
 });

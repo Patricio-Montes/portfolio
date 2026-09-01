@@ -278,7 +278,7 @@ Me mantengo en constante actualización tecnológica con objetivo en transformar
         role: "Technical Leader",
         phone: "(011) 6244-0404"
       },
-      tech: [".NET", "REST APIs", "ASPX", "Microsoft Azure", "TDD", "SDD"]
+      tech: [".NET", "REST APIs", "ASPX", "Microsoft Azure", "TDD", "SDD", "CI/CD"]
     },
     {
       company: "Digbang",
@@ -314,7 +314,7 @@ Me mantengo en constante actualización tecnológica con objetivo en transformar
         role: "PL",
         phone: "(011) 5616-8329"
       },
-      tech: ["Microsoft Azure", ".NET Core", "Angular", "Angular Material"]
+      tech: ["Microsoft Azure", ".NET Core", "Angular", "Angular Material", "CI/CD"]
     },
     {
       company: "UNX Digital / Grupo Prominente",
@@ -368,7 +368,7 @@ Me mantengo en constante actualización tecnológica con objetivo en transformar
         role: "PL",
         phone: "(221) 314-3602"
       },
-      tech: ["Java", "Gradle", "Angular", "xUnit", "Python", "C#", "JavaScript", "Jira", "Jenkins", "GitLab", "SonarQube", "DDD"]
+      tech: ["Java", "Gradle", "Angular", "xUnit", "Python", "C#", "JavaScript", "Jira", "Jenkins", "GitLab", "SonarQube", "DDD", "CI/CD"]
     },
     {
       company: "Codeicus",
@@ -386,7 +386,7 @@ Me mantengo en constante actualización tecnológica con objetivo en transformar
         role: "PL",
         phone: "(221) 314-3602"
       },
-      tech: ["Java", "Maven", "JSF", "Draw.io", "Whimsical", "React Native", "C#"]
+      tech: ["Java", "Maven", "JSF", "Draw.io", "Whimsical", "React Native", "C#", "CI/CD"]
     },
     {
       company: "Luxsys S.R.L",

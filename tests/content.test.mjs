@@ -98,6 +98,7 @@ test("experience timeline keeps verified roles, dates, and localized copy", () =
   assert.equal(urbetrack.role, "Sr .Net Developer");
   assert.equal(urbetrack.period.en, "July 2024 — April 2026");
   assert.ok(urbetrack.tech.includes(".NET"));
+  assert.ok(urbetrack.tech.includes("CI/CD"));
   assert.match(urbetrack.highlights.en[1], /router for balanced LLM distribution/);
   assert.match(urbetrack.highlights.es[1], /router para distribución balanceada de LLMs/);
 
@@ -294,6 +295,10 @@ test("added skills and verified public projects are present", () => {
   const sideas = portfolioContent.experience.find((item) => item.company === "Sideas");
   assert.ok(sideas, "missing Sideas experience");
   assert.ok(sideas.tech.includes("Angular Material"), "Sideas tech must keep Angular Material");
+  assert.ok(sideas.tech.includes("CI/CD"), "Sideas must include CI/CD");
+
+  const codeicusRoles = portfolioContent.experience.filter((item) => item.company === "Codeicus");
+  assert.ok(codeicusRoles.every((item) => item.tech.includes("CI/CD")), "Codeicus roles must include CI/CD");
 
   const databases = portfolioContent.skills.find((group) => group.name.en === "Databases");
   assert.ok(databases, "missing Databases skill group");
