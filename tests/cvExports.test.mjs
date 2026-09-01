@@ -371,6 +371,27 @@ test("web content and generated CVs use Microsoft Azure terminology", async () =
   }
 });
 
+test("generated CVs include CI/CD for Urbetrack, Sideas, and Codeicus roles", async () => {
+  const companies = ["Urbetrack", "Sideas", "Codeicus"];
+
+  for (const company of companies) {
+    const roles = portfolioContent.experience.filter((item) => item.company === company);
+    assert.ok(roles.length > 0, `${company} roles must be present`);
+    assert.ok(roles.every((item) => item.tech.includes("CI/CD")), `${company} roles must include CI/CD`);
+  }
+
+  for (const language of cvPdfExportLanguages) {
+    for (const variant of cvPdfVariants) {
+      const pdf = await readFile(new URL(`../public/downloads/${getCvPdfExports(language)[variant].fileName}`, import.meta.url));
+      const pdfText = extractPdfText(pdf);
+
+      for (const company of companies) {
+        assert.match(pdfText, new RegExp(`${company}[\\s\\S]*CI/CD`));
+      }
+    }
+  }
+});
+
 test("root standard local PDF includes references and updated Luxsys technologies", async () => {
   const pdf = await readFile(new URL("../CV-Montes-Patricio-Reducido.pdf", import.meta.url));
   const pdfText = extractPdfText(pdf);
