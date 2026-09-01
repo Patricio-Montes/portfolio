@@ -1,5 +1,5 @@
 export const languageCodes = ["en", "es"] as const;
-export const themeKeys = ["midnight", "notebook", "editorial"] as const;
+export const themeKeys = ["editorial", "vercel"] as const;
 
 export type LanguageCode = (typeof languageCodes)[number];
 export type ThemeKey = (typeof themeKeys)[number];
@@ -15,7 +15,9 @@ export const portfolioContent = {
     },
     email: "montesgpatricio@gmail.com",
     whatsapp: "https://wa.me/5491140518040",
-    linkedin: "https://www.linkedin.com/in/patricio-montes-88212448/"
+    linkedin: "https://www.linkedin.com/in/patricio-montes-88212448/",
+    github: "https://github.com/montesgp",
+    portfolio: "https://montesgp.github.io/portfolio/"
   },
   languages: [
     {
@@ -37,24 +39,17 @@ export const portfolioContent = {
   ],
   themes: [
     {
-      key: "midnight",
-      label: {
-        en: "Midnight",
-        es: "Medianoche"
-      }
-    },
-    {
-      key: "notebook",
-      label: {
-        en: "Notebook",
-        es: "Cuaderno"
-      }
-    },
-    {
       key: "editorial",
       label: {
         en: "Editorial",
         es: "Editorial"
+      }
+    },
+    {
+      key: "vercel",
+      label: {
+        en: "Vercel",
+        es: "Vercel"
       }
     }
   ],
@@ -82,14 +77,22 @@ export const portfolioContent = {
       hero: {
         eyebrow: "Software Engineer",
         title: "Backend, cloud, and product delivery with a practical engineering mindset.",
-        subtitle: "Software Engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
+        subtitle: "Software Engineer with 10+ years creating scalable, maintainable solutions focused on architecture, design, Clean Code, Clean Architecture, DDD, SDD, and TDD. Currently following AI-agent workflows under human technical direction.",
         primaryCta: "Contact me",
         secondaryCta: "View experience",
         availability: "Available for software development, architecture support, and integration work.",
         flipToBackLabel: "Read professional description",
         flipToFrontLabel: "Back to highlights",
-        cardBack: "Software Engineering. More than 10 years of experience developing solutions for companies across different sectors. My approach combines software architecture, good development practices, and automation to build maintainable, scalable, high-quality products. I believe good design reduces costs, makes product evolution easier, and minimizes long-term risk. I work following the principles of Robert C. Martin (Clean Code and Clean Architecture) and Eric Evans (Domain-Driven Design), applying design patterns, industry standards, and methodologies such as Spec-Driven Development (SDD) and Test-Driven Development (TDD) to deliver robust, testable, easy-to-maintain solutions. I currently enhance my work through an ecosystem of specialized Artificial Intelligence agents that collaborate on analysis, design, development, and validation tasks. Every architecture, quality, and design decision remains under my direction and technical judgment, using AI as a tool to increase productivity without compromising quality. I stay continuously up to date with technology and enjoy transforming business needs into reliable, scalable solutions prepared to grow.",
-        focusAreas: [".NET", "Angular", "Google Cloud", "Azure", "Clean Code", "Clean Architecture"]
+        cardBack: `More than 10 years of experience developing solutions for companies across different sectors.
+
+My approach combines software architecture, design, and good development practices to build maintainable, scalable, high-quality products. I believe good design reduces costs, facilitates product evolution, and minimizes long-term risks.
+
+I work following the principles of Robert C. Martin (Clean Code and Clean Architecture) and Eric Evans (Domain-Driven Design), applying design patterns, industry standards, and methodologies such as Spec-Driven Development (SDD) and Test-Driven Development (TDD) to deliver robust, testable, easy-to-maintain solutions.
+
+I currently enhance my work through an ecosystem of specialized Artificial Intelligence agents that collaborate on analysis, design, development, and validation tasks. Every architecture, quality, and design decision remains under my direction and technical judgment, using AI as a tool to increase productivity without compromising quality.
+
+I stay continuously up to date with technology with the aim of transforming business needs into reliable, scalable solutions prepared to grow. My projects and professional networks are centralized on GitHub: https://github.com/montesgp.`,
+        focusAreas: [".NET", "Angular", "Google Cloud", "Microsoft Azure", "Clean Code", "Clean Architecture"]
       },
       stats: [
         {
@@ -100,7 +103,7 @@ export const portfolioContent = {
         {
           value: "3",
           label: "cloud ecosystems in verified work",
-          detail: "Azure Platform, Google Cloud Platform, and Google App Engine-backed architecture."
+          detail: "Microsoft Azure, Google Cloud Platform, and Google App Engine-backed architecture."
         },
         {
           value: "EN / ES",
@@ -143,9 +146,13 @@ export const portfolioContent = {
           whatsappLabel: "Message on WhatsApp",
           emailLabel: "Email Patricio",
           linkedinLabel: "Open LinkedIn profile",
+          githubLabel: "Open GitHub profile",
+          portfolioLabel: "Visit portfolio",
           whatsappDescription: "Best for quick coordination.",
           emailDescription: "Best for project context and attachments.",
           linkedinDescription: "Best for professional networking.",
+          githubDescription: "Projects and professional networks in one place.",
+          portfolioDescription: "Explore the complete portfolio.",
           copyEmailLabel: "Email"
         }
       }
@@ -173,14 +180,22 @@ export const portfolioContent = {
       hero: {
         eyebrow: "Ingeniero de Software",
         title: "Backend, cloud y entrega de producto con criterio práctico de ingeniería.",
-        subtitle: "Ingeniero de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana.",
+        subtitle: "Ingeniero de Software 10+ años creando soluciones escalables y mantenibles con foco en arquitectura, diseño, Clean Code, Clean Architecture, DDD, SDD, TDD. Respetando actualmente flujos de trabajo con agentes IA bajo dirección técnica humana.",
         primaryCta: "Contactarme",
         secondaryCta: "Ver experiencia",
         availability: "Disponible para desarrollo de software, soporte de arquitectura e integraciones.",
         flipToBackLabel: "Leer descripción profesional",
         flipToFrontLabel: "Volver a destacados",
-        cardBack: "Ingeniería de Software. Más de 10 años de experiencia desarrollando soluciones para empresas de distintos sectores. Mi enfoque combina arquitectura de software, buenas prácticas de desarrollo y automatización para construir productos mantenibles, escalables y de alta calidad. Creo que un buen diseño reduce costos, facilita la evolución del producto y minimiza riesgos a largo plazo. Trabajo siguiendo los principios de Robert C. Martin (Clean Code y Clean Architecture) y Eric Evans (Domain-Driven Design), aplicando patrones de diseño, estándares de la industria y metodologías como Spec-Driven Development (SDD) y Test-Driven Development (TDD) para entregar soluciones robustas, testeables y fáciles de mantener. Actualmente potencio mi trabajo mediante un ecosistema de agentes de Inteligencia Artificial especializados que colaboran en tareas de análisis, diseño, desarrollo y validación. Todas las decisiones de arquitectura, calidad y diseño permanecen bajo mi dirección y criterio técnico, utilizando la IA como una herramienta para aumentar la productividad sin comprometer la calidad. Me mantengo en constante actualización tecnológica y disfruto transformar necesidades de negocio en soluciones confiables, escalables y preparadas para crecer.",
-        focusAreas: [".NET", "Angular", "Google Cloud", "Azure", "Clean Code", "Clean Architecture"]
+        cardBack: `Más de 10 años de experiencia desarrollando soluciones para empresas de distintos sectores.
+
+Mi enfoque combina arquitectura de software, diseño y buenas prácticas de desarrollo para construir productos mantenibles, escalables y de alta calidad. Creo que un buen diseño reduce costos, facilita la evolución del producto y minimiza riesgos a largo plazo.
+
+Trabajo siguiendo los principios de Robert C. Martin (Clean Code y Clean Architecture) y Eric Evans (Domain-Driven Design), aplicando patrones de diseño, estándares de la industria y metodologías como Spec-Driven Development (SDD) y Test-Driven Development (TDD) para entregar soluciones robustas, testeables y fáciles de mantener.
+
+Actualmente potencio mi trabajo mediante un ecosistema de agentes de Inteligencia Artificial especializados que colaboran en tareas de análisis, diseño, desarrollo y validación. Todas las decisiones de arquitectura, calidad y diseño permanecen bajo mi dirección y criterio técnico, utilizando la IA como una herramienta para aumentar la productividad sin comprometer la calidad.
+
+Me mantengo en constante actualización tecnológica con objetivo en transformar necesidades de negocio en soluciones confiables, escalables y preparadas para crecer. Mis proyectos y redes profesionales están centralizados en GitHub: https://github.com/montesgp.`,
+        focusAreas: [".NET", "Angular", "Google Cloud", "Microsoft Azure", "Clean Code", "Clean Architecture"]
       },
       stats: [
         {
@@ -191,7 +206,7 @@ export const portfolioContent = {
         {
           value: "3",
           label: "ecosistemas cloud en trabajos verificados",
-          detail: "Azure Platform, Google Cloud Platform y arquitectura sobre Google App Engine."
+          detail: "Microsoft Azure, Google Cloud Platform y arquitectura sobre Google App Engine."
         },
         {
           value: "EN / ES",
@@ -234,9 +249,13 @@ export const portfolioContent = {
           whatsappLabel: "Escribir por WhatsApp",
           emailLabel: "Enviar email a Patricio",
           linkedinLabel: "Abrir perfil de LinkedIn",
+          githubLabel: "Abrir perfil de GitHub",
+          portfolioLabel: "Visitar portfolio",
           whatsappDescription: "Ideal para coordinación rápida.",
           emailDescription: "Ideal para contexto de proyecto y adjuntos.",
           linkedinDescription: "Ideal para networking profesional.",
+          githubDescription: "Proyectos y redes profesionales en un solo lugar.",
+          portfolioDescription: "Explorá el portfolio completo.",
           copyEmailLabel: "Email"
         }
       }
@@ -259,7 +278,7 @@ export const portfolioContent = {
         role: "Technical Leader",
         phone: "(011) 6244-0404"
       },
-      tech: [".NET", "REST APIs", "ASPX", "TDD", "SDD"]
+      tech: [".NET", "REST APIs", "ASPX", "Microsoft Azure", "TDD", "SDD"]
     },
     {
       company: "Digbang",
@@ -277,7 +296,7 @@ export const portfolioContent = {
         role: "Arq. Software",
         phone: "(011) 6533-1716"
       },
-      tech: ["Envoyer", ".NET 7", "Azure Platform", "Redis", "Azure Service Bus", "Node.js"]
+      tech: ["Envoyer", ".NET 7", "Microsoft Azure", "Redis", "Azure Service Bus", "Node.js"]
     },
     {
       company: "Sideas",
@@ -295,7 +314,7 @@ export const portfolioContent = {
         role: "PL",
         phone: "(011) 5616-8329"
       },
-      tech: ["Azure", ".NET Core", "Angular", "Angular Material"]
+      tech: ["Microsoft Azure", ".NET Core", "Angular", "Angular Material"]
     },
     {
       company: "UNX Digital / Grupo Prominente",
@@ -409,6 +428,13 @@ export const portfolioContent = {
   skills: [
     {
       name: {
+        en: "Principles and ways of working",
+        es: "Principios y formas de trabajo"
+      },
+      items: ["SOLID", "KISS", "Scrum"]
+    },
+    {
+      name: {
         en: "Programming",
         es: "Programación"
       },
@@ -426,7 +452,7 @@ export const portfolioContent = {
         en: "Frameworks",
         es: "Frameworks"
       },
-      items: [".NET", "Spring Boot", "Entity Framework", "Angular", "Angular Material"]
+      items: [".NET", "Spring Boot", "Entity Framework", "Angular", "Angular Material", "Next.js", "React", "Vue"]
     },
     {
       name: {
@@ -440,7 +466,7 @@ export const portfolioContent = {
         en: "Platforms",
         es: "Plataformas"
       },
-      items: ["Azure Platform", "Google Cloud Platform", "Azure Service Bus", "Docker"]
+      items: ["Microsoft Azure", "Google Cloud Platform", "Azure Service Bus", "AWS Rekognition", "Docker"]
     },
     {
       name: {
@@ -563,8 +589,8 @@ export const portfolioContent = {
       },
       institution: "Universidad Tecnológica Nacional, Facultad Regional Rosario",
       period: {
-        en: "March 2008 — listed as ongoing in the CV",
-        es: "Marzo 2008 — listado como Actualidad en el CV"
+        en: "March 2008 — Present",
+        es: "Marzo 2008 — Actualidad"
       },
       details: {
         en: "Listed without adding unverified graduation or current-status claims.",
@@ -584,21 +610,6 @@ export const portfolioContent = {
       details: {
         en: "Secondary technical education.",
         es: "Educación técnica secundaria."
-      }
-    },
-    {
-      name: {
-        en: "English training",
-        es: "Formación en inglés"
-      },
-      institution: "Open English",
-      period: {
-        en: "May 2021 — listed as ongoing in the CV",
-        es: "Mayo 2021 — listado como Actualidad en el CV"
-      },
-      details: {
-        en: "Level 2/8 with TOEFL/TOEIC preparation listed in the CV; no fluency claim is added.",
-        es: "Nivel 2/8 con preparación TOEFL/TOEIC listada en el CV; no se agrega afirmación de fluidez."
       }
     },
     {

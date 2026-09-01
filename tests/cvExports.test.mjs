@@ -102,6 +102,7 @@ test("CV export assets are EN/ES only with no Portuguese PDFs remaining", async 
   const utnRosario = portfolioContent.projects.find((project) => project.name === "UTN FRRO research project");
   assert.ok(databases?.items.includes("Redis"), "Databases must include Redis");
   assert.equal(platforms?.items.includes("Redis"), false);
+  assert.ok(platforms?.items.includes("AWS Rekognition"));
   assert.equal(siegwerk?.context.en, "Luxsys S.R.L — June 2018");
   assert.equal(utnRosario?.context.en, "UTN FRRO — March 2012 to December 2012");
 
@@ -145,11 +146,13 @@ test("generated PDF summaries mirror the concise page summary", async () => {
         assert.match(pdfText, /Software Engineer with 10\+/);
         assert.match(pdfText, /Software Engineer/);
         assert.doesNotMatch(pdfText, /Software Developer with 10\+/i);
+        assert.doesNotMatch(pdfText, /automation/i);
       }
       if (language === "es") {
-        assert.match(pdfText, /Ingeniero de Software con 10\+/);
+        assert.match(pdfText, /Ingeniero de Software 10\+/);
         assert.match(pdfText, /Ingeniero de Software/);
         assert.doesNotMatch(pdfText, /Desarrollador de Software con 10\+/i);
+        assert.doesNotMatch(pdfText, /automatización/i);
       }
     }
   }
@@ -173,6 +176,9 @@ test("generated PDF CVs mirror corrected page data", async () => {
   assert.deepEqual([...languageCodes], ["en", "es"]);
   assert.deepEqual([...cvPdfExportLanguages], ["en", "es"]);
   assert.ok(frameworks?.items.includes("Angular Material"), "Frameworks must include Angular Material");
+  for (const framework of ["Next.js", "React", "Vue"]) {
+    assert.ok(frameworks?.items.includes(framework), `Frameworks must include ${framework}`);
+  }
   assert.equal(frameworks?.items.includes(genericMaterialFramework), false);
   assert.ok(sideas?.tech.includes("Angular Material"), "Sideas tech must keep Angular Material");
   assert.doesNotMatch(pageText, /\bPortuguese\b|\bPortugués\b|\bPortuguês\b|\bPT\b|\bpt\b/);
@@ -214,6 +220,7 @@ test("generated PDF CVs mirror corrected page data", async () => {
   const utnRosario = portfolioContent.projects.find((project) => project.name === "UTN FRRO research project");
   assert.ok(databases?.items.includes("Redis"), "Databases must include Redis");
   assert.equal(platforms?.items.includes("Redis"), false);
+  assert.ok(platforms?.items.includes("AWS Rekognition"));
   assert.equal(siegwerk?.context.en, "Luxsys S.R.L — June 2018");
   assert.equal(utnRosario?.context.en, "UTN FRRO — March 2012 to December 2012");
 
@@ -232,6 +239,7 @@ test("generated PDF CVs mirror corrected page data", async () => {
       assert.match(pdfText, /JSF/);
       assert.doesNotMatch(pdfText, new RegExp(genericMaterialFramework));
       assert.match(pdfText, /Frameworks: [^\n]*Angular Material/);
+      assert.match(pdfText, /Frameworks: [^\n]*Next\.js, React, Vue/);
       assert.match(pdfText, /Sideas[\s\S]*Angular Material/);
       assert.match(pdfText, /Codeicus/);
       assert.match(pdfText, /Luxsys S\.R\.L/);
@@ -265,7 +273,10 @@ test("generated PDF CVs mirror corrected page data", async () => {
       assert.match(pdfText, /Gradle/);
       assert.match(pdfText, /SonarQube/);
       assert.match(pdfText, /\bxUnit\b/);
+      assert.match(skillsText, /Platforms: [\s\S]*AWS Rekognition|Plataformas: [\s\S]*AWS Rekognition/);
       assert.match(skillsText, /Platforms: [\s\S]*Docker|Plataformas: [\s\S]*Docker/);
+      assert.match(pdfText, /https:\/\/github\.com\/montesgp/);
+      assert.doesNotMatch(pdfText, /automation|automatización/i);
       assert.doesNotMatch(pdfText, new RegExp(`\\b${legacyUnitTestTool}\\b`, "i"));
       for (const forbiddenTool of forbiddenTools) {
         assert.doesNotMatch(pdfText, new RegExp(`\\b${forbiddenTool}\\b`, "i"));
@@ -333,6 +344,29 @@ test("generated Modern and ATS PDFs include verified Luxsys C# and .NET Framewor
         assert.match(roleText, /C#/);
         assert.match(roleText, /\.NET Framework 4\.5/);
       }
+    }
+  }
+});
+
+test("web content and generated CVs use Microsoft Azure terminology", async () => {
+  const urbetrack = portfolioContent.experience.find((item) => item.company === "Urbetrack");
+  const sideas = portfolioContent.experience.find((item) => item.company === "Sideas");
+  const platforms = portfolioContent.skills.find((group) => group.name.en === "Platforms");
+  const webContent = JSON.stringify(portfolioContent);
+
+  assert.ok(urbetrack?.tech.includes("Microsoft Azure"));
+  assert.ok(sideas?.tech.includes("Microsoft Azure"));
+  assert.equal(sideas?.tech.includes("Azure"), false);
+  assert.ok(platforms?.items.includes("Microsoft Azure"));
+  assert.doesNotMatch(webContent, /Azure Platform/);
+
+  for (const language of cvPdfExportLanguages) {
+    for (const variant of cvPdfVariants) {
+      const pdf = await readFile(new URL(`../public/downloads/${getCvPdfExports(language)[variant].fileName}`, import.meta.url));
+      const pdfText = extractPdfText(pdf);
+
+      assert.match(pdfText, /Microsoft Azure/);
+      assert.doesNotMatch(pdfText, /Azure Platform/);
     }
   }
 });

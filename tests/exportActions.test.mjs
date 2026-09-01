@@ -97,6 +97,22 @@ test("Modern and ATS download items share consistent styling", async () => {
   assert.equal(anchorClassExpressions[0], anchorClassExpressions[1]);
 });
 
+test("contact footer uses only action links without wrapped profile URLs", async () => {
+  const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
+  const contactMatch = shell.match(/function Contact[\s\S]*?\n}\n$/);
+
+  assert.ok(contactMatch, "Contact component should be present");
+  const contactSource = contactMatch[0];
+
+  assert.match(contactSource, /copy\.linkedinLabel/);
+  assert.match(contactSource, /copy\.githubLabel/);
+  assert.doesNotMatch(contactSource, /<dl\b/);
+  assert.doesNotMatch(contactSource, /content\.profile\.linkedin\}/);
+  assert.doesNotMatch(contactSource, /content\.profile\.github\}/);
+  assert.doesNotMatch(contactSource, /copy\.portfolioLabel/);
+  assert.doesNotMatch(contactSource, /content\.profile\.portfolio/);
+});
+
 test("export action helper was removed with browser print behavior", async () => {
   const helperExists = await import("node:fs/promises")
     .then((fs) => fs.stat(new URL("../src/utils/exportActions.ts", import.meta.url)))
