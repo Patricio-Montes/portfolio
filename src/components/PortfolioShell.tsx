@@ -24,6 +24,10 @@ type ThemeStyle = {
   shell: string;
   header: string;
   heroGradient: string;
+  heroSection: string;
+  heroGrid: string;
+  heroTitle: string;
+  heroAside: string;
   card: string;
   cardMuted: string;
   chip: string;
@@ -37,40 +41,14 @@ type ThemeStyle = {
 };
 
 const themeStyles: Record<ThemeKey, ThemeStyle> = {
-  midnight: {
-    shell: "bg-slate-950 text-slate-100",
-    header: "border-white/10 bg-slate-950/80",
-    heroGradient: "from-sky-500/20 via-indigo-500/10 to-transparent",
-    card: "border-white/10 bg-white/10 shadow-2xl shadow-sky-950/30",
-    cardMuted: "border-white/10 bg-white/[0.06]",
-    chip: "border-sky-300/30 bg-sky-400/10 text-sky-100",
-    accent: "text-sky-200",
-    primaryButton: "bg-sky-300 text-slate-950 hover:bg-sky-200",
-    secondaryButton: "border-white/20 bg-white/10 text-white hover:bg-white/15",
-    selectorActive: "border-sky-300 bg-sky-300 text-slate-950",
-    selectorInactive: "border-white/15 bg-white/5 text-slate-200 hover:bg-white/10",
-    ring: "focus-visible:outline-sky-200",
-    timelineDot: "bg-sky-300"
-  },
-  notebook: {
-    shell: "bg-[#f8f5ed] text-[#27231e]",
-    header: "border-[#d8ccb7] bg-[#f8f5ed]/90",
-    heroGradient: "from-[#d9c7a6]/35 via-[#efe5d1]/50 to-transparent",
-    card: "border-[#d8ccb7] bg-[#fffdf7] shadow-xl shadow-[#d8ccb7]/35",
-    cardMuted: "border-[#d8ccb7] bg-[#fffdf7]/75",
-    chip: "border-[#a89574]/50 bg-[#f0e3ca] text-[#3f3528]",
-    accent: "text-[#6f5a39]",
-    primaryButton: "bg-[#302820] text-[#fffdf7] hover:bg-[#4a3d30]",
-    secondaryButton: "border-[#a89574]/60 bg-[#fffdf7] text-[#302820] hover:bg-[#f0e3ca]",
-    selectorActive: "border-[#302820] bg-[#302820] text-[#fffdf7]",
-    selectorInactive: "border-[#a89574]/60 bg-[#fffdf7] text-[#302820] hover:bg-[#f0e3ca]",
-    ring: "focus-visible:outline-[#6f5a39]",
-    timelineDot: "bg-[#6f5a39]"
-  },
   editorial: {
     shell: "bg-[#f6f1e8] text-[#211b16]",
     header: "border-[#d7c7ad] bg-[#f6f1e8]/90",
     heroGradient: "from-[#c9a66b]/30 via-[#eadcc3]/50 to-transparent",
+    heroSection: "relative px-5 py-20 sm:px-8 sm:py-28 lg:px-10",
+    heroGrid: "mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center",
+    heroTitle: "mt-5 max-w-4xl text-4xl font-black tracking-tight text-balance sm:text-6xl",
+    heroAside: "rounded-[2rem] border p-6",
     card: "border-[#d7c7ad] bg-[#fffaf1] shadow-xl shadow-[#d7c7ad]/35",
     cardMuted: "border-[#d7c7ad] bg-[#fffaf1]/75",
     chip: "border-[#a98d61]/50 bg-[#f3e5ca] text-[#3a2f24]",
@@ -81,6 +59,25 @@ const themeStyles: Record<ThemeKey, ThemeStyle> = {
     selectorInactive: "border-[#a98d61]/60 bg-[#fffaf1] text-[#2d241c] hover:bg-[#f3e5ca]",
     ring: "focus-visible:outline-[#6d5532]",
     timelineDot: "bg-[#6d5532]"
+  },
+  vercel: {
+    shell: "bg-[#fafafa] text-[#171717]",
+    header: "border-transparent bg-[#fafafa] shadow-[0_1px_0_0_rgba(0,0,0,0.1)]",
+    heroGradient: "",
+    heroSection: "relative px-5 py-20 sm:px-8 sm:py-28 lg:px-10",
+    heroGrid: "mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(19rem,0.6fr)] lg:items-start",
+    heroTitle: "mt-5 max-w-4xl text-5xl font-semibold leading-none tracking-[-0.0475em] text-balance sm:text-7xl",
+    heroAside: "rounded-xl border p-6",
+    card: "border-transparent bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.08)]",
+    cardMuted: "border-transparent bg-transparent shadow-none",
+    chip: "border-transparent bg-transparent text-[#4d4d4d] shadow-none",
+    accent: "text-[#171717]",
+    primaryButton: "bg-[#171717] text-white hover:bg-[#2e2e2e]",
+    secondaryButton: "border-transparent bg-transparent text-[#4d4d4d] shadow-none hover:bg-[#ebebeb] hover:text-[#171717]",
+    selectorActive: "border-transparent bg-[#171717] text-white shadow-none",
+    selectorInactive: "border-transparent bg-transparent text-[#4d4d4d] shadow-none hover:bg-[#ebebeb] hover:text-[#171717]",
+    ring: "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_#fff,0_0_0_4px_#0072f5]",
+    timelineDot: "bg-[#171717]"
   }
 };
 
@@ -158,7 +155,7 @@ function SectionHeading({
 
 export default function PortfolioShell({ content }: PortfolioShellProps) {
   const [language, setLanguage] = useState<LanguageCode>("es");
-  const [theme, setTheme] = useState<ThemeKey>("notebook");
+  const [theme, setTheme] = useState<ThemeKey>("vercel");
 
   const copy = content.locales[language];
   const themeStyle = themeStyles[theme];
@@ -290,12 +287,14 @@ function Hero({
   const heroCardButtonLabel = isHeroCardFlipped ? copy.hero.flipToFrontLabel : copy.hero.flipToBackLabel;
 
   return (
-    <section className="relative px-5 py-20 sm:px-8 sm:py-28 lg:px-10" aria-labelledby="hero-title">
-      <div className={cx("absolute inset-x-0 top-0 -z-10 h-[36rem] bg-gradient-to-br blur-3xl", theme.heroGradient)} />
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+    <section className={theme.heroSection} aria-labelledby="hero-title">
+      {theme.heroGradient ? (
+        <div className={cx("absolute inset-x-0 top-0 -z-10 h-[36rem] bg-gradient-to-br blur-3xl", theme.heroGradient)} />
+      ) : null}
+      <div className={theme.heroGrid}>
         <div>
           <p className={cx("text-sm font-bold uppercase tracking-[0.4em]", theme.accent)}>{copy.hero.eyebrow}</p>
-          <h1 id="hero-title" className="mt-5 max-w-4xl text-4xl font-black tracking-tight text-balance sm:text-6xl">
+          <h1 id="hero-title" className={theme.heroTitle}>
             {copy.hero.title}
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 opacity-85 sm:text-xl">{copy.hero.subtitle}</p>
@@ -328,7 +327,7 @@ function Hero({
           <p className="mt-6 text-sm leading-6 opacity-70">{copy.hero.availability}</p>
         </div>
 
-        <aside className={cx("rounded-[2rem] border p-6", theme.card)} aria-label="Portfolio highlights">
+        <aside className={cx(theme.heroAside, theme.card)} aria-label="Portfolio highlights">
           <div className="flex justify-end">
             <button
               type="button"
@@ -704,6 +703,13 @@ function Contact({
       href: content.profile.linkedin,
       external: true,
       style: theme.secondaryButton
+    },
+    {
+      label: copy.githubLabel,
+      description: copy.githubDescription,
+      href: content.profile.github,
+      external: true,
+      style: theme.secondaryButton
     }
   ] as const;
 
@@ -711,7 +717,7 @@ function Contact({
     <footer id="contact" aria-labelledby="contact-title" className="scroll-mt-28 px-5 py-16 sm:px-8 lg:px-10">
       <div className={cx("mx-auto max-w-7xl rounded-[2rem] border p-8 sm:p-10", theme.card)}>
         <SectionHeading id="contact" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} theme={theme} />
-        <div className="mt-8 grid gap-3 md:grid-cols-3">
+        <div className="mt-8 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           {contactOptions.map((option) => (
             <a
               key={option.label}
@@ -725,20 +731,6 @@ function Contact({
             </a>
           ))}
         </div>
-        <dl className="mt-8 grid gap-4 text-sm sm:grid-cols-3">
-          <div>
-            <dt className="font-bold opacity-70">WhatsApp</dt>
-            <dd className="mt-1 break-all">{content.profile.whatsapp}</dd>
-          </div>
-          <div>
-            <dt className="font-bold opacity-70">{copy.copyEmailLabel}</dt>
-            <dd className="mt-1 break-all">{content.profile.email}</dd>
-          </div>
-          <div>
-            <dt className="font-bold opacity-70">LinkedIn</dt>
-            <dd className="mt-1 break-all">{content.profile.linkedin}</dd>
-          </div>
-        </dl>
       </div>
     </footer>
   );

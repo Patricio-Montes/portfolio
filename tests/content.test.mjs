@@ -7,10 +7,7 @@ import { cvPdfExportLanguages } from "../src/utils/cvExports.ts";
 test("portfolio exposes the required language and theme options", () => {
   assert.deepEqual([...languageCodes], ["en", "es"]);
   assert.deepEqual([...cvPdfExportLanguages], [...languageCodes]);
-  assert.deepEqual([...themeKeys], ["midnight", "notebook", "editorial"]);
-  assert.equal(themeKeys.includes("forest"), false);
-  assert.equal(themeKeys.includes("sunrise"), false);
-  assert.equal(themeKeys.includes("graphite"), false);
+  assert.deepEqual([...themeKeys], ["editorial", "vercel"]);
 
   for (const code of languageCodes) {
     assert.ok(portfolioContent.locales[code], `missing locale ${code}`);
@@ -20,23 +17,24 @@ test("portfolio exposes the required language and theme options", () => {
     );
   }
 
-  const publicText = JSON.stringify(portfolioContent);
-  for (const forbidden of [/\bforest\b/i, /\bBosque\b/i, /\bFloresta\b/i, /\bPortuguese\b/i, /\bPortugués\b/i, /\bPortuguês\b/i, /\bPT\b/, /\bpt\b/, /\bsunrise\b/i, /\bAmanecer\b/i, /\bgraphite\b/i, /\bGrafito\b/i]) {
-    assert.equal(forbidden.test(publicText), false, `forbidden public copy found: ${forbidden}`);
-  }
-  assert.ok(portfolioContent.themes.some((theme) => theme.key === "notebook"));
   assert.ok(portfolioContent.themes.some((theme) => theme.key === "editorial" && theme.label.en === "Editorial" && theme.label.es === "Editorial"));
-  assert.ok(portfolioContent.themes.some((theme) => theme.label.en === "Notebook" && theme.label.es === "Cuaderno"));
-  assert.equal(portfolioContent.themes.length, 3);
+  assert.ok(portfolioContent.themes.some((theme) => theme.key === "vercel" && theme.label.en === "Vercel" && theme.label.es === "Vercel"));
+  assert.equal(portfolioContent.themes.length, 2);
   assert.equal(portfolioContent.languages.length, 2);
 });
 
-test("portfolio shell defaults to Spanish language and notebook theme", async () => {
+test("portfolio shell defaults to Spanish language and Vercel theme", async () => {
   const shell = await readFile(new URL("../src/components/PortfolioShell.tsx", import.meta.url), "utf8");
 
   assert.match(shell, /useState<LanguageCode>\("es"\)/);
-  assert.match(shell, /useState<ThemeKey>\("notebook"\)/);
-  assert.doesNotMatch(shell, /\bgraphite\b/);
+  assert.match(shell, /useState<ThemeKey>\("vercel"\)/);
+  assert.match(shell, /vercel:/);
+  assert.match(shell, /heroGrid:/);
+  assert.match(shell, /heroTitle:/);
+  assert.match(shell, /theme\.heroGradient \? \(/);
+  assert.match(shell, /bg-\[#fafafa\]/);
+  assert.match(shell, /shadow-\[0_0_0_1px_rgba\(0,0,0,0\.08\)\]/);
+  assert.match(shell, /focus-visible:shadow-\[0_0_0_2px_#fff,0_0_0_4px_#0072f5\]/);
 });
 
 test("verified identity and contact facts are present without private CV data", () => {
@@ -53,8 +51,10 @@ test("verified identity and contact facts are present without private CV data", 
   );
   assert.deepEqual(Object.keys(portfolioContent.profile).sort(), [
     "email",
+    "github",
     "linkedin",
     "name",
+    "portfolio",
     "title",
     "whatsapp"
   ]);
@@ -80,6 +80,8 @@ test("verified identity and contact facts are present without private CV data", 
     assert.match(contact.whatsappLabel, /WhatsApp/i);
     assert.match(contact.emailLabel, /mail|email|correo/i);
     assert.match(contact.linkedinLabel, /LinkedIn/i);
+    assert.match(contact.githubLabel, /GitHub/i);
+    assert.match(contact.portfolioLabel, /portfolio/i);
 
     const exportCopy = portfolioContent.locales[code].exports;
     const publicExportText = JSON.stringify(exportCopy);
@@ -120,7 +122,7 @@ test("hero focus chips use the requested professional positioning only", () => {
       ".NET",
       "Angular",
       "Google Cloud",
-      "Azure",
+      "Microsoft Azure",
       "Clean Code",
       "Clean Architecture"
     ]);
@@ -129,36 +131,30 @@ test("hero focus chips use the requested professional positioning only", () => {
   }
 });
 
-test("page profile summary is concise and covers the required positioning", () => {
+test("page profile summary is concise, human-directed, and excludes automation", () => {
   const expectedSummaries = {
-    en: "Software Engineer with 10+ years building scalable, maintainable systems through architecture, automation, Clean Code, Clean Architecture, DDD, SDD/TDD, and AI agents directed by human technical judgment.",
-    es: "Ingeniero de Software con 10+ años creando soluciones escalables y mantenibles con arquitectura, automatización, Clean Code, Clean Architecture, DDD, SDD/TDD y agentes IA bajo dirección técnica humana."
+    en: "Software Engineer with 10+ years creating scalable, maintainable solutions focused on architecture, design, Clean Code, Clean Architecture, DDD, SDD, and TDD. Currently following AI-agent workflows under human technical direction.",
+    es: "Ingeniero de Software 10+ años creando soluciones escalables y mantenibles con foco en arquitectura, diseño, Clean Code, Clean Architecture, DDD, SDD, TDD. Respetando actualmente flujos de trabajo con agentes IA bajo dirección técnica humana."
   };
 
   for (const code of languageCodes) {
     const summary = portfolioContent.locales[code].hero.subtitle;
 
     assert.equal(summary, expectedSummaries[code]);
-    assert.ok(summary.length <= 210, `${code} summary must stay short enough for PDF layout`);
-    if (code === "en") {
-      assert.match(summary, /^Software Engineer\b/);
-      assert.doesNotMatch(summary, /^Software Developer\b/i);
-    }
-    if (code === "es") {
-      assert.match(summary, /^Ingeniero de Software\b/);
-      assert.doesNotMatch(summary, /^Desarrollador de Software\b/i);
-    }
+    assert.ok(summary.length <= 280, `${code} summary must stay suitable for PDF layout`);
     assert.match(summary, /10\+/);
     assert.match(summary, /architecture|arquitectura/i);
-    assert.match(summary, /automation|automatización/i);
+    assert.match(summary, /design|diseño/i);
     assert.match(summary, /Clean Code/);
     assert.match(summary, /Clean Architecture/);
     assert.match(summary, /DDD/);
-    assert.match(summary, /SDD\/TDD/);
-    assert.match(summary, /AI agents|agentes IA/i);
+    assert.match(summary, /SDD/);
+    assert.match(summary, /TDD/);
+    assert.match(summary, /AI-agent|agentes IA/i);
     assert.match(summary, /human technical|técnica humana/i);
     assert.match(summary, /scalable|escalables/i);
     assert.match(summary, /maintainable|mantenibles/i);
+    assert.doesNotMatch(summary, /automation|automatización/i);
   }
 });
 
@@ -273,14 +269,16 @@ test("education avoids unverified graduation or fluency claims", () => {
     item.institution.includes("Universidad Tecnológica Nacional")
   );
   assert.ok(engineering);
-  assert.match(engineering.period.en, /listed as ongoing in the CV/);
-  assert.match(engineering.details.en, /without adding unverified graduation/);
+  assert.equal(engineering.period.en, "March 2008 — Present");
+  assert.equal(engineering.period.es, "Marzo 2008 — Actualidad");
 
   const englishTraining = portfolioContent.education.filter((item) =>
     item.name.en.includes("English training")
   );
-  assert.equal(englishTraining.length, 2);
-  assert.ok(englishTraining.some((item) => item.details.en.includes("no fluency claim")));
+  assert.equal(englishTraining.length, 1);
+  assert.equal(englishTraining[0].institution, "Education First");
+  assert.match(englishTraining[0].details.en, /Level 9\/16, basic professional competence/);
+  assert.equal(JSON.stringify(portfolioContent).includes("Open English"), false);
 });
 
 test("added skills and verified public projects are present", () => {
@@ -288,6 +286,9 @@ test("added skills and verified public projects are present", () => {
   const frameworks = portfolioContent.skills.find((group) => group.name.en === "Frameworks");
   assert.ok(frameworks, "missing Frameworks skill group");
   assert.ok(frameworks.items.includes("Angular Material"), "Frameworks must include Angular Material");
+  for (const framework of ["Next.js", "React", "Vue"]) {
+    assert.ok(frameworks.items.includes(framework), `Frameworks must include ${framework}`);
+  }
   assert.equal(frameworks.items.includes(genericMaterialFramework), false, "must not add generic Material framework");
 
   const sideas = portfolioContent.experience.find((item) => item.company === "Sideas");
@@ -341,6 +342,10 @@ test("portfolio content removes forbidden visible tools, replaces unit test word
 
   const platforms = portfolioContent.skills.find((group) => group.name.en === "Platforms");
   assert.ok(platforms?.items.includes("Docker"), "Platforms must include Docker");
+  assert.ok(platforms?.items.includes("AWS Rekognition"), "Platforms must include AWS Rekognition");
+
+  const principles = portfolioContent.skills[0];
+  assert.deepEqual(principles.items, ["SOLID", "KISS", "Scrum"]);
 });
 
 test("contact title copy matches requested bilingual bottom CTA", () => {
@@ -381,14 +386,18 @@ test("project contexts use corrected company and institution associations", () =
 });
 
 test("hero card back exposes accessible bilingual professional descriptions", () => {
-  assert.match(portfolioContent.locales.es.hero.cardBack, /Ingeniería de Software/);
+  assert.match(portfolioContent.locales.es.hero.cardBack, /Más de 10 años de experiencia/);
   assert.match(portfolioContent.locales.es.hero.cardBack, /Clean Code y Clean Architecture/);
   assert.match(portfolioContent.locales.es.hero.cardBack, /Domain-Driven Design/);
   assert.match(portfolioContent.locales.es.hero.cardBack, /agentes de Inteligencia Artificial especializados/);
-  assert.match(portfolioContent.locales.en.hero.cardBack, /Software Engineering/);
+  assert.match(portfolioContent.locales.en.hero.cardBack, /More than 10 years of experience/);
   assert.match(portfolioContent.locales.en.hero.cardBack, /Clean Code and Clean Architecture/);
   assert.match(portfolioContent.locales.en.hero.cardBack, /Domain-Driven Design/);
   assert.match(portfolioContent.locales.en.hero.cardBack, /specialized Artificial Intelligence agents/);
+  for (const code of languageCodes) {
+    assert.match(portfolioContent.locales[code].hero.cardBack, /https:\/\/github\.com\/montesgp/);
+    assert.doesNotMatch(portfolioContent.locales[code].hero.cardBack, /automation|automatización/i);
+  }
 
   for (const code of languageCodes) {
     assert.ok(portfolioContent.locales[code].hero.flipToBackLabel);

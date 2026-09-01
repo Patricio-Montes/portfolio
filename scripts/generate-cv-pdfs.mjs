@@ -56,8 +56,36 @@ function publicContactLines() {
   return [
     portfolioContent.profile.email,
     `WhatsApp: ${portfolioContent.profile.whatsapp}`,
-    portfolioContent.profile.linkedin
+    portfolioContent.profile.linkedin,
+    portfolioContent.profile.github
   ];
+}
+
+function addModernPdfContactLines(doc) {
+  const [email, whatsapp, linkedin, github] = publicContactLines();
+
+  doc.fontSize(8.5).fillColor("#E2E8F0").text([email, whatsapp, linkedin].join("\n"), 365, 43, {
+    width: 180,
+    align: "right",
+    lineGap: 2
+  });
+  doc.fontSize(8.5).fillColor("#93C5FD").text(github, 365, 86, {
+    width: 180,
+    align: "right",
+    link: portfolioContent.profile.github,
+    underline: true
+  });
+}
+
+function addAtsPdfContactLines(doc) {
+  const [email, whatsapp, linkedin, github] = publicContactLines();
+
+  doc.fontSize(9).text(`${email} | ${whatsapp} | ${linkedin} | `, { width: 500, continued: true });
+  doc.fillColor("#0000EE").text(github, {
+    link: portfolioContent.profile.github,
+    underline: true
+  });
+  doc.fillColor("#000000");
 }
 
 function addSectionTitle(doc, title, color = "#111827") {
@@ -198,11 +226,7 @@ function renderModernCv(doc, language) {
     width: 330
   });
   doc.font("Helvetica").fontSize(12).fillColor("#CBD5E1").text(localize(portfolioContent.profile.title, language), 48, 76);
-  doc.fontSize(8.5).fillColor("#E2E8F0").text(publicContactLines().join("\n"), 365, 43, {
-    width: 180,
-    align: "right",
-    lineGap: 2
-  });
+  addModernPdfContactLines(doc);
 
   doc.x = 48;
   doc.y = 172;
@@ -270,7 +294,8 @@ function renderAtsCv(doc, language) {
 
   doc.font("Helvetica-Bold").fontSize(18).fillColor("#000000").text(portfolioContent.profile.name);
   doc.font("Helvetica").fontSize(10).text(localize(portfolioContent.profile.title, language));
-  doc.moveDown(0.35).fontSize(9).text(publicContactLines().join(" | "), { width: 500 });
+  doc.moveDown(0.35);
+  addAtsPdfContactLines(doc);
 
   addSectionTitle(doc, labels.professionalSummary, "#000000");
   doc.font("Helvetica").fontSize(10).fillColor("#000000").text(copy.hero.subtitle, { width: 500, lineGap: 2 });
