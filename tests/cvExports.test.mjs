@@ -317,20 +317,16 @@ test("generated Modern and ATS PDFs include references for every public experien
   }
 });
 
-test("generated Modern and ATS PDFs include verified Luxsys C# and .NET Framework 4.5 technologies", async () => {
+test("generated Modern and ATS PDFs preserve the requested Luxsys role-specific technologies", async () => {
   const luxsysItems = portfolioContent.experience.filter((item) => item.company === "Luxsys S.R.L");
+  const itDeveloper = luxsysItems.find((item) => item.role === "IT Developer");
+  const technicalLeader = luxsysItems.find((item) => item.role === "Technical Leader");
 
   assert.equal(luxsysItems.length, 2);
-  for (const expectedRole of [
-    "IT Developer | October 2016 — December 2018",
-    "Technical Leader | December 2018 — October 2019"
-  ]) {
-    const item = luxsysItems.find((experience) => `${experience.role} | ${experience.period.en}` === expectedRole);
-
-    assert.ok(item, `missing Luxsys role: ${expectedRole}`);
-    assert.ok(item.tech.includes("C#"), `${expectedRole} must include C# in page data`);
-    assert.ok(item.tech.includes(".NET Framework 4.5"), `${expectedRole} must include .NET Framework 4.5 in page data`);
-  }
+  assert.ok(itDeveloper);
+  assert.ok(technicalLeader);
+  assert.deepEqual(itDeveloper.tech, ["BPM", "REST APIs", "SQL Server", "Softland", ".NET C#", ".NET Framework 4.5"]);
+  assert.deepEqual(technicalLeader.tech, ["BPM", "Technical leadership", "Estimation", "Project follow-up", "C#"]);
 
   for (const language of cvPdfExportLanguages) {
     for (const variant of cvPdfVariants) {
@@ -341,8 +337,16 @@ test("generated Modern and ATS PDFs include verified Luxsys C# and .NET Framewor
       for (const role of ["Technical Leader", "IT Developer"]) {
         const roleText = textBetween(luxsysText, role, role === "Technical Leader" ? "IT Developer" : "SELECTED PROJECTS");
 
+        if (role === "IT Developer") {
+          assert.match(roleText, /SQL Server/);
+          assert.match(roleText, /\.NET C#/);
+          assert.match(roleText, /\.NET Framework 4\.5/);
+          assert.doesNotMatch(roleText, /Technologies: [^\n]*Bejerman|Tecnologías: [^\n]*Bejerman/);
+          continue;
+        }
+
         assert.match(roleText, /C#/);
-        assert.match(roleText, /\.NET Framework 4\.5/);
+        assert.doesNotMatch(roleText, /\.NET Framework 4\.5/);
       }
     }
   }
@@ -416,10 +420,13 @@ test("root standard local PDF includes references and updated Luxsys technologie
 
   assert.match(pdfText, /Luxsys S\.R\.L/);
 
-  for (const role of ["Technical Leader", "IT Developer"]) {
-    const roleText = textBetween(pdfText, role, role === "Technical Leader" ? "IT Developer" : "PROJECTS");
+  const technicalLeaderText = textBetween(pdfText, "Technical Leader", "IT Developer");
+  const itDeveloperText = textBetween(pdfText, "IT Developer", "PROJECTS");
 
-    assert.match(roleText, /C#/);
-    assert.match(roleText, /\.NET Framework 4\.5/);
-  }
+  assert.match(technicalLeaderText, /C#/);
+  assert.doesNotMatch(technicalLeaderText, /\.NET Framework 4\.5/);
+  assert.match(itDeveloperText, /SQL Server/);
+  assert.match(itDeveloperText, /\.NET C#/);
+  assert.match(itDeveloperText, /\.NET Framework 4\.5/);
+  assert.doesNotMatch(itDeveloperText, /Tecnologías: [^\n]*Bejerman/);
 });

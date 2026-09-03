@@ -488,7 +488,7 @@ function ExperienceGroupCard({
 
   return (
     <li className={cx("relative rounded-[1.75rem] border p-6", theme.card)}>
-      <div className="flex items-start justify-between gap-4">
+      <div className="min-h-8 pr-48">
         {isGrouped ? <h3 className="text-2xl font-black">{group.company}</h3> : <h3 className="sr-only">{group.company}</h3>}
         <button
           type="button"
@@ -496,7 +496,7 @@ function ExperienceGroupCard({
           aria-label={`${flipLabel}: ${group.company}`}
           onClick={() => setIsFlipped((current) => !current)}
           className={cx(
-            "shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold outline-none transition",
+            "absolute right-6 top-6 rounded-full border px-3 py-1.5 text-xs font-bold outline-none transition",
             theme.ring,
             theme.selectorInactive
           )}

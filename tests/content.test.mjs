@@ -35,6 +35,8 @@ test("portfolio shell defaults to Spanish language and Vercel theme", async () =
   assert.match(shell, /bg-\[#fafafa\]/);
   assert.match(shell, /shadow-\[0_0_0_1px_rgba\(0,0,0,0\.08\)\]/);
   assert.match(shell, /focus-visible:shadow-\[0_0_0_2px_#fff,0_0_0_4px_#0072f5\]/);
+  assert.match(shell, /absolute right-6 top-6/);
+  assert.match(shell, /min-h-8 pr-48/);
 });
 
 test("verified identity and contact facts are present without private CV data", () => {
@@ -249,20 +251,26 @@ test("each public experience exposes a reference person with role and phone", ()
   }
 });
 
-test("Luxsys public roles include verified C# and .NET Framework 4.5 technologies", () => {
+test("Luxsys role technologies preserve the requested role-specific distinctions", () => {
   const luxsysItems = portfolioContent.experience.filter((item) => item.company === "Luxsys S.R.L");
+  const itDeveloper = luxsysItems.find((item) => item.role === "IT Developer");
+  const technicalLeader = luxsysItems.find((item) => item.role === "Technical Leader");
 
   assert.equal(luxsysItems.length, 2);
-  for (const expectedRole of [
-    "IT Developer | October 2016 — December 2018",
-    "Technical Leader | December 2018 — October 2019"
-  ]) {
-    const item = luxsysItems.find((experience) => `${experience.role} | ${experience.period.en}` === expectedRole);
+  assert.ok(itDeveloper, "missing Luxsys IT Developer role");
+  assert.ok(technicalLeader, "missing Luxsys Technical Leader role");
 
-    assert.ok(item, `missing Luxsys role: ${expectedRole}`);
-    assert.ok(item.tech.includes("C#"), `${expectedRole} must include C#`);
-    assert.ok(item.tech.includes(".NET Framework 4.5"), `${expectedRole} must include .NET Framework 4.5`);
-  }
+  assert.ok(itDeveloper.tech.includes("SQL Server"));
+  assert.ok(itDeveloper.tech.includes(".NET C#"));
+  assert.ok(itDeveloper.tech.includes(".NET Framework 4.5"));
+  assert.equal(itDeveloper.tech.includes("SQL"), false);
+  assert.equal(itDeveloper.tech.includes("C#"), false);
+  assert.equal(itDeveloper.tech.includes("Bejerman"), false);
+  assert.match(itDeveloper.highlights.en.join(" "), /Bejerman/);
+  assert.match(itDeveloper.highlights.es.join(" "), /Bejerman/);
+
+  assert.ok(technicalLeader.tech.includes("C#"));
+  assert.equal(technicalLeader.tech.includes(".NET Framework 4.5"), false);
 });
 
 test("education avoids unverified graduation or fluency claims", () => {
@@ -422,4 +430,19 @@ test("project dependencies stay clean of heavy PDF and Excel packages", async ()
     false,
     "Excel packages must not be added to package.json"
   );
+});
+
+
+test("website contact intros invite visitors to the GitHub portfolio without entering PDF exports", async () => {
+  assert.equal(
+    portfolioContent.locales.en.sections.contact.intro,
+    "Choose the channel that fits the conversation: WhatsApp for direct coordination, email for detailed context, or LinkedIn for professional networking. You can also explore my work in the GitHub portfolio."
+  );
+  assert.equal(
+    portfolioContent.locales.es.sections.contact.intro,
+    "Eleg\u00ed el canal que mejor se ajuste a la conversaci\u00f3n: WhatsApp para coordinaci\u00f3n directa, email para contexto detallado o LinkedIn para contacto profesional. Tambi\u00e9n pod\u00e9s explorar mi trabajo en el portfolio de GitHub."
+  );
+
+  const pdfGenerator = await readFile(new URL("../scripts/generate-cv-pdfs.mjs", import.meta.url), "utf8");
+  assert.doesNotMatch(pdfGenerator, /sections\.contact\.intro/);
 });

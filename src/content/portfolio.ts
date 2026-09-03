@@ -142,7 +142,7 @@ I stay continuously up to date with technology with the aim of transforming busi
         contact: {
           eyebrow: "Contact",
           title: "Let’s talk about software, technology, and solutions built to grow.",
-          intro: "Choose the channel that fits the conversation: WhatsApp for direct coordination, email for detailed context, or LinkedIn for professional networking.",
+          intro: "Choose the channel that fits the conversation: WhatsApp for direct coordination, email for detailed context, or LinkedIn for professional networking. You can also explore my work in the GitHub portfolio.",
           whatsappLabel: "Message on WhatsApp",
           emailLabel: "Email Patricio",
           linkedinLabel: "Open LinkedIn profile",
@@ -245,7 +245,7 @@ Me mantengo en constante actualización tecnológica con objetivo en transformar
         contact: {
           eyebrow: "Contacto",
           title: "Hablemos sobre software, tecnología y soluciones preparadas para crecer.",
-          intro: "Elegí el canal que mejor se ajuste a la conversación: WhatsApp para coordinación directa, email para contexto detallado o LinkedIn para contacto profesional.",
+          intro: "Elegí el canal que mejor se ajuste a la conversación: WhatsApp para coordinación directa, email para contexto detallado o LinkedIn para contacto profesional. También podés explorar mi trabajo en el portfolio de GitHub.",
           whatsappLabel: "Escribir por WhatsApp",
           emailLabel: "Enviar email a Patricio",
           linkedinLabel: "Abrir perfil de LinkedIn",
@@ -404,7 +404,7 @@ Me mantengo en constante actualización tecnológica con objetivo en transformar
         role: "PL",
         phone: "(011) 3684-2464"
       },
-      tech: ["BPM", "REST APIs", "SQL", "Softland", "Bejerman", "C#", ".NET Framework 4.5"]
+      tech: ["BPM", "REST APIs", "SQL Server", "Softland", ".NET C#", ".NET Framework 4.5"]
     },
     {
       company: "Luxsys S.R.L",
@@ -422,7 +422,7 @@ Me mantengo en constante actualización tecnológica con objetivo en transformar
         role: "PL",
         phone: "(011) 3684-2464"
       },
-      tech: ["BPM", "Technical leadership", "Estimation", "Project follow-up", "C#", ".NET Framework 4.5"]
+      tech: ["BPM", "Technical leadership", "Estimation", "Project follow-up", "C#"]
     }
   ],
   skills: [
